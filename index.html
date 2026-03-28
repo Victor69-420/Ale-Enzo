@@ -3,639 +3,1121 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NASCAR — Full Throttle</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<title>Ateliê Ale&Enzo</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --black: #0a0a0a;
-    --white: #f5f5f0;
-    --yellow: #FFD600;
-    --red: #E8001D;
-    --gray: #1a1a1a;
-    --mid: #2a2a2a;
-    --text-dim: #888;
+    --cream: #F5F0EA;
+    --warm-white: #FAFAF8;
+    --charcoal: #1C1C1A;
+    --mid: #4A4845;
+    --light: #9A9490;
+    --accent: #B8977E;
+    --accent-dark: #8B6B55;
+    --border: #E2DDD8;
+    --success: #7A9E7E;
+    --error: #C17070;
   }
-
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
-
   body {
-    background: var(--black);
-    color: var(--white);
-    font-family: 'Barlow', sans-serif;
-    overflow-x: hidden;
+    font-family: 'Jost', sans-serif;
+    background: var(--warm-white);
+    color: var(--charcoal);
     cursor: none;
+    overflow-x: hidden;
   }
 
-  /* CURSOR */
-  .cursor {
+  /* CUSTOM CURSOR */
+  #cursor {
     width: 10px; height: 10px;
-    background: var(--yellow);
     border-radius: 50%;
+    background: var(--accent);
     position: fixed; top: 0; left: 0;
-    pointer-events: none; z-index: 9999;
+    pointer-events: none;
+    z-index: 9999;
     transform: translate(-50%, -50%);
-    mix-blend-mode: difference;
+    transition: transform 0.1s ease, width 0.25s ease, height 0.25s ease, background 0.25s ease;
+    mix-blend-mode: multiply;
   }
-  .cursor-ring {
+  #cursor-ring {
     width: 36px; height: 36px;
-    border: 1px solid var(--yellow);
     border-radius: 50%;
+    border: 1px solid var(--accent);
     position: fixed; top: 0; left: 0;
-    pointer-events: none; z-index: 9998;
+    pointer-events: none;
+    z-index: 9998;
     transform: translate(-50%, -50%);
-    transition: all 0.18s ease;
+    transition: transform 0.35s cubic-bezier(0.23,1,0.32,1), width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
     opacity: 0.6;
   }
+  body:hover #cursor { opacity: 1; }
+  .cursor-hover #cursor { width: 16px; height: 16px; background: var(--accent-dark); }
+  .cursor-hover #cursor-ring { width: 52px; height: 52px; opacity: 0.3; }
 
   /* NAV */
   nav {
-    position: fixed; top: 0; width: 100%; z-index: 100;
-    padding: 20px 48px;
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
     display: flex; align-items: center; justify-content: space-between;
-    background: linear-gradient(to bottom, rgba(10,10,10,0.97), transparent);
+    padding: 0 4rem;
+    height: 72px;
+    background: rgba(250,250,248,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
   }
+  nav.scrolled { border-color: var(--border); box-shadow: 0 2px 24px rgba(0,0,0,0.04); }
   .logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2rem; letter-spacing: 4px; color: var(--yellow);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: var(--charcoal);
+    text-decoration: none;
   }
-  .logo span { color: var(--red); }
-  nav ul { list-style: none; display: flex; gap: 36px; }
-  nav ul a {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 600; font-size: 0.85rem;
-    letter-spacing: 3px; text-transform: uppercase;
-    color: var(--white); text-decoration: none;
-    opacity: 0.7; transition: opacity 0.2s, color 0.2s;
+  .logo span { color: var(--accent); font-style: italic; }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid);
+    text-decoration: none;
+    position: relative;
+    transition: color 0.2s;
   }
-  nav ul a:hover { opacity: 1; color: var(--yellow); }
+  .nav-links a::after {
+    content: '';
+    position: absolute; bottom: -3px; left: 0;
+    width: 0; height: 1px;
+    background: var(--accent);
+    transition: width 0.3s ease;
+  }
+  .nav-links a:hover { color: var(--charcoal); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-right { display: flex; gap: 1.2rem; align-items: center; }
+  .cart-btn {
+    position: relative;
+    background: none; border: none;
+    font-size: 1.2rem; cursor: none;
+    color: var(--charcoal);
+    transition: color 0.2s;
+  }
+  .cart-btn:hover { color: var(--accent); }
+  #cart-count {
+    position: absolute; top: -6px; right: -8px;
+    background: var(--accent);
+    color: white;
+    font-size: 0.6rem;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 500;
+    display: none;
+  }
 
   /* HERO */
   .hero {
     height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    text-align: center;
     position: relative;
-    display: flex; align-items: flex-end;
-    padding: 0 48px 80px;
     overflow: hidden;
+    background: var(--cream);
   }
   .hero-bg {
     position: absolute; inset: 0;
-    background: linear-gradient(to bottom, rgba(10,10,10,0.3) 0%, rgba(10,10,10,0.92) 100%);
-    z-index: 1;
+    background: radial-gradient(ellipse at 70% 30%, rgba(184,151,126,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 80%, rgba(184,151,126,0.08) 0%, transparent 50%);
   }
-  .hero-img {
-    position: absolute; inset: 0;
-    width: 100%; height: 100%;
-    object-fit: cover; object-position: center;
-    z-index: 0;
+  .hero-line {
+    position: absolute;
+    width: 1px; background: var(--border);
+    top: 0; bottom: 0; left: 50%;
+    opacity: 0.5;
+    animation: lineReveal 1.4s ease forwards;
+    transform-origin: top;
   }
-  .hero-stripe {
-    position: absolute; top: 0; left: 0; bottom: 0;
-    width: 6px; z-index: 2;
-    background: linear-gradient(to bottom, var(--yellow), var(--red));
-  }
-  .speed-lines {
-    position: absolute; inset: 0; z-index: 1;
-    background: repeating-linear-gradient(
-      90deg,
-      transparent, transparent 80px,
-      rgba(255,255,255,0.018) 80px, rgba(255,255,255,0.018) 82px
-    );
-    animation: slidelines 1.1s linear infinite;
-  }
-  @keyframes slidelines {
-    from { transform: translateX(0); }
-    to { transform: translateX(82px); }
-  }
-  .hero-content { position: relative; z-index: 3; max-width: 800px; }
+  @keyframes lineReveal { from { scaleY: 0; } to { scaleY: 1; } }
   .hero-tag {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.75rem; letter-spacing: 5px; text-transform: uppercase;
-    color: var(--yellow); margin-bottom: 16px;
-    display: flex; align-items: center; gap: 12px;
-  }
-  .hero-tag::before {
-    content: ''; display: inline-block;
-    width: 30px; height: 2px; background: var(--yellow);
+    font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 2rem;
+    opacity: 0; animation: fadeUp 0.8s 0.3s ease forwards;
   }
   .hero h1 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(5rem, 13vw, 11rem);
-    line-height: 0.9; letter-spacing: 2px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    color: var(--charcoal);
+    opacity: 0; animation: fadeUp 0.9s 0.5s ease forwards;
   }
-  .hero h1 .accent { color: var(--red); display: block; }
+  .hero h1 em { font-style: italic; color: var(--accent); }
   .hero-sub {
-    font-weight: 300; font-size: 1.05rem;
-    color: rgba(245,245,240,0.65);
-    margin-top: 24px; max-width: 420px; line-height: 1.6;
+    margin-top: 1.5rem;
+    font-size: 0.85rem; font-weight: 300;
+    letter-spacing: 0.08em;
+    color: var(--light);
+    opacity: 0; animation: fadeUp 0.9s 0.7s ease forwards;
   }
-  .hero-cta { margin-top: 36px; display: flex; gap: 16px; align-items: center; }
+  .hero-cta {
+    margin-top: 3rem;
+    display: flex; gap: 1rem;
+    opacity: 0; animation: fadeUp 0.9s 0.9s ease forwards;
+  }
   .btn-primary {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700; font-size: 0.85rem;
-    letter-spacing: 3px; text-transform: uppercase;
-    padding: 14px 36px;
-    background: var(--yellow); color: var(--black);
-    border: none; cursor: none; text-decoration: none;
-    transition: background 0.2s, transform 0.15s;
-    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 100%, 12px 100%);
-    display: inline-block;
+    padding: 0.85rem 2.4rem;
+    background: var(--charcoal);
+    color: white;
+    border: 1px solid var(--charcoal);
+    font-family: 'Jost', sans-serif;
+    font-size: 0.72rem; font-weight: 400;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    cursor: none; text-decoration: none;
+    transition: background 0.25s, color 0.25s, transform 0.2s;
   }
-  .btn-primary:hover { background: var(--red); color: #fff; transform: translateX(4px); }
-  .btn-ghost {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 600; font-size: 0.85rem;
-    letter-spacing: 3px; text-transform: uppercase;
-    color: rgba(245,245,240,0.55); text-decoration: none;
-    transition: color 0.2s;
+  .btn-primary:hover { background: var(--accent); border-color: var(--accent); transform: translateY(-2px); }
+  .btn-outline {
+    padding: 0.85rem 2.4rem;
+    background: transparent;
+    color: var(--charcoal);
+    border: 1px solid var(--charcoal);
+    font-family: 'Jost', sans-serif;
+    font-size: 0.72rem; font-weight: 400;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    cursor: none; text-decoration: none;
+    transition: background 0.25s, color 0.25s, transform 0.2s;
   }
-  .btn-ghost:hover { color: var(--white); }
+  .btn-outline:hover { background: var(--charcoal); color: white; transform: translateY(-2px); }
+  .scroll-hint {
+    position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--light);
+    animation: fadeUp 1s 1.2s ease forwards; opacity: 0;
+  }
+  .scroll-line {
+    width: 1px; height: 40px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+    animation: scrollAnim 2s 1.5s ease-in-out infinite;
+  }
+  @keyframes scrollAnim { 0%,100% { transform: scaleY(1); } 50% { transform: scaleY(0.5); } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-  /* STATS BAR */
-  .stats-bar {
-    background: var(--red); padding: 18px 48px;
-    display: flex;
+  /* SECTION BASE */
+  section { padding: 6rem 4rem; }
+  .section-label {
+    font-size: 0.65rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 0.8rem;
   }
-  .stat-item {
-    flex: 1; text-align: center;
-    border-right: 1px solid rgba(255,255,255,0.2); padding: 0 16px;
-  }
-  .stat-item:last-child { border-right: none; }
-  .stat-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2.2rem; letter-spacing: 2px; line-height: 1;
-  }
-  .stat-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.68rem; letter-spacing: 2px;
-    text-transform: uppercase; opacity: 0.75; margin-top: 2px;
-  }
-
-  /* TICKER */
-  .ticker {
-    background: var(--yellow); color: var(--black);
-    padding: 12px 0; overflow: hidden; white-space: nowrap;
-  }
-  .ticker-inner { display: inline-flex; animation: ticker 22s linear infinite; }
-  .ticker-item {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.1rem; letter-spacing: 3px; padding: 0 48px;
-    display: flex; align-items: center; gap: 16px;
-  }
-  .ticker-item::after { content: '▶'; font-size: 0.6rem; opacity: 0.4; }
-  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
-  /* SECTION */
-  section { padding: 100px 48px; }
-  .section-tag {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.7rem; letter-spacing: 5px; text-transform: uppercase;
-    color: var(--yellow); margin-bottom: 16px;
-    display: flex; align-items: center; gap: 10px;
-  }
-  .section-tag::before { content: ''; display: inline-block; width: 20px; height: 1px; background: var(--yellow); }
   .section-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(3rem, 7vw, 6rem); letter-spacing: 1px; line-height: 1;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 300;
+    line-height: 1.2;
+    color: var(--charcoal);
   }
-
-  /* CORRIDAS */
-  #corridas { background: var(--black); }
-  .races-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; margin-top: 56px; }
-  .race-card {
-    position: relative; overflow: hidden;
-    aspect-ratio: 4/5; background: var(--gray); cursor: none;
+  .section-title em { font-style: italic; color: var(--accent); }
+  .divider {
+    width: 48px; height: 1px;
+    background: var(--accent);
+    margin: 1.5rem 0;
   }
-  .race-card img {
-    width: 100%; height: 100%; object-fit: cover;
-    transition: transform 0.5s ease, filter 0.5s ease;
-    filter: saturate(0.5) brightness(0.65);
-  }
-  .race-card:hover img { transform: scale(1.06); filter: saturate(1) brightness(0.8); }
-  .race-card-info {
-    position: absolute; inset: 0;
-    display: flex; flex-direction: column; justify-content: flex-end;
-    padding: 28px;
-    background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, transparent 55%);
-  }
-  .race-number {
-    font-family: 'Bebas Neue', sans-serif; font-size: 5rem; line-height: 1;
-    color: rgba(255,255,255,0.06); position: absolute; top: 16px; right: 20px;
-  }
-  .race-date {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase;
-    color: var(--yellow); margin-bottom: 6px;
-  }
-  .race-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 1px; line-height: 1.1; }
-  .race-track { font-size: 0.82rem; font-weight: 300; opacity: 0.55; margin-top: 4px; }
-  .race-badge {
-    position: absolute; top: 20px; left: 20px; background: var(--red);
-    font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem;
-    letter-spacing: 2px; text-transform: uppercase; padding: 4px 10px;
-  }
-  .race-link {
-    display: inline-flex; align-items: center; gap: 6px; margin-top: 12px;
-    font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem;
-    letter-spacing: 2px; text-transform: uppercase;
-    color: var(--yellow); text-decoration: none;
-    opacity: 0; transform: translateY(6px);
-    transition: opacity 0.25s, transform 0.25s;
-  }
-  .race-card:hover .race-link { opacity: 1; transform: translateY(0); }
-
-  /* PILOTOS */
-  #pilotos { background: var(--gray); }
-  .drivers-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; margin-top: 56px; align-items: start; }
-  .driver-big { aspect-ratio: 3/4; background: var(--mid); overflow: hidden; position: relative; }
-  .driver-big img {
-    width: 100%; height: 100%; object-fit: cover; object-position: top center;
-    filter: grayscale(15%); transition: filter 0.4s, transform 0.4s;
-  }
-  .driver-big:hover img { filter: grayscale(0%); transform: scale(1.03); }
-  .driver-big-info {
-    position: absolute; bottom: 0; left: 0; right: 0; padding: 32px;
-    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-  }
-  .driver-num { font-family: 'Bebas Neue', sans-serif; font-size: 5rem; line-height: 1; color: var(--yellow); }
-  .driver-name { font-family: 'Bebas Neue', sans-serif; font-size: 2.4rem; letter-spacing: 1px; }
-  .driver-team { font-size: 0.8rem; font-weight: 300; opacity: 0.5; letter-spacing: 2px; text-transform: uppercase; }
-  .drivers-list { display: flex; flex-direction: column; gap: 2px; }
-  .driver-row {
-    display: flex; align-items: center; gap: 18px; padding: 18px 22px;
-    background: var(--mid); transition: background 0.2s; cursor: none;
-    position: relative; overflow: hidden; text-decoration: none; color: inherit;
-  }
-  .driver-row::after {
-    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
-    background: var(--yellow); transform: scaleY(0); transform-origin: bottom; transition: transform 0.25s;
-  }
-  .driver-row:hover { background: #333; }
-  .driver-row:hover::after { transform: scaleY(1); }
-  .dr-rank { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--text-dim); min-width: 24px; }
-  .dr-color { width: 4px; height: 40px; flex-shrink: 0; border-radius: 2px; }
-  .dr-info { flex: 1; }
-  .dr-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1rem; letter-spacing: 1px; }
-  .dr-team-s { font-size: 0.75rem; opacity: 0.4; margin-top: 2px; }
-  .dr-pts { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--yellow); }
 
   /* SOBRE */
-  #sobre { background: var(--black); display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-  .about-visual { position: relative; height: 580px; }
-  .about-img-main { position: absolute; right: 0; top: 0; width: 85%; height: 72%; object-fit: cover; filter: brightness(0.85); }
-  .about-img-accent {
-    position: absolute; left: 0; bottom: 0; width: 52%; height: 44%;
-    object-fit: cover; border: 5px solid var(--black); filter: brightness(0.9);
+  .sobre { background: var(--warm-white); }
+  .sobre-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+    max-width: 1100px; margin: 4rem auto 0;
   }
-  .about-badge {
-    position: absolute; right: 18px; bottom: 90px; width: 96px; height: 96px;
-    background: var(--yellow); display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    font-family: 'Bebas Neue', sans-serif; color: var(--black); text-align: center;
+  .sobre-img {
+    aspect-ratio: 3/4;
+    background: var(--cream);
+    position: relative;
+    overflow: hidden;
   }
-  .about-badge .yr { font-size: 2rem; line-height: 1; }
-  .about-badge .yr-label { font-size: 0.5rem; letter-spacing: 2px; text-transform: uppercase; opacity: 0.6; }
-  .about-text p { font-weight: 300; font-size: 1rem; line-height: 1.75; color: rgba(245,245,240,0.6); margin-top: 24px; }
-  .about-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 40px; }
-  .fact { background: var(--gray); padding: 22px; }
-  .fact-num { font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; color: var(--red); line-height: 1; }
-  .fact-desc { font-size: 0.78rem; opacity: 0.45; margin-top: 4px; }
+  .sobre-img-inner {
+    position: absolute; inset: 12px;
+    background: linear-gradient(135deg, var(--border), var(--cream));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 4rem; color: var(--light);
+    font-style: italic;
+  }
+  .sobre-img::before {
+    content: '';
+    position: absolute; top: -12px; right: -12px;
+    width: 80%; height: 80%;
+    border: 1px solid var(--border);
+    z-index: -1;
+  }
+  .sobre-text p {
+    font-size: 0.9rem; font-weight: 300;
+    line-height: 1.9; color: var(--mid);
+    margin-bottom: 1.2rem;
+  }
+  .sobre-stats {
+    display: flex; gap: 2.5rem; margin-top: 2.5rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.5rem; font-weight: 300;
+    color: var(--accent);
+  }
+  .stat-label {
+    font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--light); margin-top: 0.2rem;
+  }
+
+  /* PRODUTOS */
+  .produtos { background: var(--cream); }
+  .produtos-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    max-width: 1200px; margin: 0 auto 3rem;
+  }
+  .filter-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .filter-tab {
+    padding: 0.4rem 1.1rem;
+    border: 1px solid var(--border);
+    background: transparent;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--mid); cursor: none;
+    transition: all 0.2s;
+  }
+  .filter-tab.active, .filter-tab:hover {
+    background: var(--charcoal); color: white; border-color: var(--charcoal);
+  }
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    max-width: 1200px; margin: 0 auto;
+  }
+  .product-card {
+    background: var(--warm-white);
+    position: relative; overflow: hidden;
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+    cursor: none;
+  }
+  .product-card:hover { transform: translateY(-6px); box-shadow: 0 20px 48px rgba(0,0,0,0.08); }
+  .product-img {
+    aspect-ratio: 1;
+    background: var(--cream);
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .product-emoji { font-size: 5rem; opacity: 0.5; }
+  .product-badge {
+    position: absolute; top: 1rem; left: 1rem;
+    background: var(--accent); color: white;
+    font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 0.25rem 0.7rem;
+  }
+  .product-overlay {
+    position: absolute; inset: 0;
+    background: rgba(28,28,26,0.6);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .product-card:hover .product-overlay { opacity: 1; }
+  .overlay-btn {
+    padding: 0.7rem 1.8rem;
+    background: white; color: var(--charcoal);
+    border: none;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.7rem; font-weight: 500;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    cursor: none;
+    transform: translateY(8px);
+    transition: transform 0.3s, background 0.2s;
+  }
+  .product-card:hover .overlay-btn { transform: translateY(0); }
+  .overlay-btn:hover { background: var(--accent); color: white; }
+  .product-info { padding: 1.4rem; }
+  .product-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem; font-weight: 400;
+    color: var(--charcoal); margin-bottom: 0.3rem;
+  }
+  .product-desc { font-size: 0.78rem; color: var(--light); font-weight: 300; margin-bottom: 1rem; }
+  .product-footer { display: flex; align-items: center; justify-content: space-between; }
+  .product-price { font-size: 1.1rem; font-weight: 500; color: var(--charcoal); }
+  .product-price-old { font-size: 0.8rem; color: var(--light); text-decoration: line-through; margin-right: 0.4rem; }
+  .add-cart {
+    width: 36px; height: 36px;
+    border: 1px solid var(--charcoal);
+    background: none; color: var(--charcoal);
+    font-size: 1.1rem; cursor: none;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .add-cart:hover { background: var(--charcoal); color: white; }
+
+  /* TABELA DE PREÇOS */
+  .precos { background: var(--warm-white); }
+  .precos-inner { max-width: 900px; margin: 0 auto; }
+  .preco-table {
+    width: 100%; border-collapse: collapse; margin-top: 3rem;
+  }
+  .preco-table thead th {
+    text-align: left;
+    font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--light); font-weight: 400;
+    padding: 0.8rem 1.5rem;
+    border-bottom: 2px solid var(--border);
+  }
+  .preco-table tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+  .preco-table tbody tr:hover { background: var(--cream); }
+  .preco-table td {
+    padding: 1.2rem 1.5rem;
+    font-size: 0.85rem; font-weight: 300;
+    color: var(--mid);
+  }
+  .preco-table td:first-child {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem; color: var(--charcoal); font-weight: 400;
+  }
+  .preco-table td.price-cell { font-weight: 500; color: var(--accent); }
+  .preco-category {
+    background: var(--cream) !important;
+    font-size: 0.65rem !important;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--light) !important;
+    font-family: 'Jost', sans-serif !important;
+    padding: 0.5rem 1.5rem !important;
+  }
+
+  /* FRETE */
+  .frete-section { background: var(--cream); padding: 5rem 4rem; }
+  .frete-box {
+    max-width: 500px; margin: 3rem auto 0;
+    background: var(--warm-white);
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+  }
+  .frete-box h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem; font-weight: 400;
+    margin-bottom: 1.5rem;
+  }
+  .input-group { margin-bottom: 1rem; }
+  .input-group label {
+    display: block;
+    font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--light); margin-bottom: 0.5rem;
+  }
+  .input-row { display: flex; gap: 0.5rem; }
+  .input-field {
+    width: 100%; padding: 0.8rem 1rem;
+    border: 1px solid var(--border);
+    background: var(--cream);
+    font-family: 'Jost', sans-serif;
+    font-size: 0.85rem; color: var(--charcoal);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .input-field:focus { border-color: var(--accent); }
+  .btn-frete {
+    padding: 0.8rem 1.5rem;
+    background: var(--charcoal); color: white; border: none;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+    cursor: none; white-space: nowrap;
+    transition: background 0.2s;
+  }
+  .btn-frete:hover { background: var(--accent); }
+  #frete-result {
+    margin-top: 1.2rem; padding: 1rem;
+    background: var(--cream);
+    border-left: 2px solid var(--accent);
+    display: none;
+  }
+  .frete-option { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
+  .frete-option:last-child { margin-bottom: 0; }
+  .frete-name { font-size: 0.8rem; color: var(--mid); }
+  .frete-price { font-size: 0.85rem; font-weight: 500; color: var(--accent); }
+
+  /* CARRINHO SIDEBAR */
+  .cart-overlay {
+    position: fixed; inset: 0;
+    background: rgba(28,28,26,0.5);
+    z-index: 200; opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .cart-overlay.open { opacity: 1; pointer-events: all; }
+  .cart-sidebar {
+    position: fixed; top: 0; right: 0; bottom: 0;
+    width: min(420px, 100vw);
+    background: var(--warm-white);
+    z-index: 201;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.23,1,0.32,1);
+    display: flex; flex-direction: column;
+  }
+  .cart-sidebar.open { transform: translateX(0); }
+  .cart-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 2rem; border-bottom: 1px solid var(--border);
+  }
+  .cart-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem; font-weight: 400;
+  }
+  .close-cart { background: none; border: none; font-size: 1.3rem; cursor: none; color: var(--mid); }
+  .cart-items { flex: 1; overflow-y: auto; padding: 1.5rem 2rem; }
+  .cart-empty {
+    text-align: center; padding: 3rem 0;
+    font-size: 0.85rem; color: var(--light);
+  }
+  .cart-empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.4; }
+  .cart-item {
+    display: flex; gap: 1rem; margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem; border-bottom: 1px solid var(--border);
+  }
+  .cart-item-img {
+    width: 70px; height: 70px;
+    background: var(--cream);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+  }
+  .cart-item-info { flex: 1; }
+  .cart-item-name { font-family: 'Cormorant Garamond', serif; font-size: 1rem; }
+  .cart-item-price { font-size: 0.8rem; color: var(--accent); margin-top: 0.2rem; }
+  .cart-item-qty {
+    display: flex; align-items: center; gap: 0.6rem;
+    margin-top: 0.6rem;
+  }
+  .qty-btn {
+    width: 24px; height: 24px;
+    border: 1px solid var(--border);
+    background: none; font-size: 0.9rem; cursor: none;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .qty-btn:hover { background: var(--charcoal); color: white; border-color: var(--charcoal); }
+  .qty-num { font-size: 0.85rem; min-width: 20px; text-align: center; }
+  .remove-item { font-size: 0.7rem; color: var(--light); background: none; border: none; cursor: none; margin-left: auto; }
+  .remove-item:hover { color: var(--error); }
+  .cart-footer { padding: 1.5rem 2rem; border-top: 1px solid var(--border); }
+  .cart-total-row { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
+  .cart-total-label { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--light); }
+  .cart-total-value { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; }
+
+  /* PAGAMENTO */
+  .pagamento-section { background: var(--warm-white); padding: 2rem; }
+  .payment-tabs {
+    display: flex; gap: 0; margin-top: 1rem;
+    border: 1px solid var(--border);
+    width: 100%;
+  }
+  .pay-tab {
+    flex: 1; padding: 0.8rem;
+    background: none; border: none; border-right: 1px solid var(--border);
+    font-family: 'Jost', sans-serif;
+    font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--light); cursor: none;
+    transition: all 0.2s;
+  }
+  .pay-tab:last-child { border-right: none; }
+  .pay-tab.active { background: var(--charcoal); color: white; }
+  .pay-content { padding: 1.2rem 0; display: none; }
+  .pay-content.active { display: block; }
+  .pix-code {
+    display: flex; align-items: center; gap: 0.8rem;
+    background: var(--cream); padding: 0.8rem 1rem;
+    font-size: 0.78rem; color: var(--mid); font-family: monospace;
+    word-break: break-all;
+  }
+  .copy-btn {
+    background: var(--charcoal); color: white; border: none;
+    padding: 0.4rem 0.8rem; font-size: 0.65rem;
+    cursor: none; white-space: nowrap; flex-shrink: 0;
+    transition: background 0.2s;
+  }
+  .copy-btn:hover { background: var(--accent); }
+  .parcelas { font-size: 0.78rem; color: var(--mid); }
+  .parcelas span { color: var(--accent); font-weight: 500; }
+  .checkout-btn {
+    width: 100%; margin-top: 1.2rem;
+    padding: 1rem;
+    background: var(--charcoal); color: white; border: none;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase;
+    cursor: none; transition: background 0.2s;
+  }
+  .checkout-btn:hover { background: var(--accent); }
+
+  /* SOCIAL / CONTATO */
+  .social-section {
+    background: var(--charcoal);
+    padding: 6rem 4rem;
+    text-align: center;
+    color: white;
+  }
+  .social-section .section-label { color: var(--accent); }
+  .social-section .section-title { color: white; }
+  .social-section .divider { margin: 1.5rem auto; }
+  .social-links {
+    display: flex; gap: 1.5rem; justify-content: center;
+    margin-top: 3rem; flex-wrap: wrap;
+  }
+  .social-link {
+    display: flex; flex-direction: column; align-items: center; gap: 0.6rem;
+    padding: 1.8rem 2rem; min-width: 120px;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: white; text-decoration: none;
+    transition: all 0.3s;
+    position: relative; overflow: hidden;
+  }
+  .social-link::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--accent);
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+  }
+  .social-link:hover::before { transform: translateY(0); }
+  .social-link span { position: relative; z-index: 1; }
+  .social-icon { font-size: 1.8rem; }
+  .social-name {
+    font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase;
+  }
+  .contact-row {
+    display: flex; gap: 4rem; justify-content: center;
+    margin-top: 4rem; padding-top: 4rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    flex-wrap: wrap;
+  }
+  .contact-item { text-align: center; }
+  .contact-label {
+    font-size: 0.65rem; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 0.5rem;
+  }
+  .contact-value { font-size: 0.9rem; font-weight: 300; color: rgba(255,255,255,0.7); }
+
+  /* NEWSLETTER */
+  .newsletter {
+    background: var(--cream); padding: 5rem 4rem;
+    text-align: center;
+  }
+  .newsletter-form {
+    display: flex; gap: 0; max-width: 440px; margin: 2rem auto 0;
+  }
+  .newsletter-input {
+    flex: 1; padding: 0.9rem 1.2rem;
+    border: 1px solid var(--border); border-right: none;
+    background: white;
+    font-family: 'Jost', sans-serif; font-size: 0.85rem;
+    outline: none; transition: border-color 0.2s;
+  }
+  .newsletter-input:focus { border-color: var(--accent); }
+  .newsletter-btn {
+    padding: 0.9rem 1.5rem;
+    background: var(--charcoal); color: white; border: 1px solid var(--charcoal);
+    font-family: 'Jost', sans-serif;
+    font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+    cursor: none; transition: background 0.2s;
+  }
+  .newsletter-btn:hover { background: var(--accent); border-color: var(--accent); }
 
   /* FOOTER */
-  footer { background: var(--gray); padding: 60px 48px 32px; }
-  .footer-top { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.08); }
-  .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; letter-spacing: 4px; color: var(--yellow); line-height: 1; }
-  .footer-logo span { color: var(--red); }
-  .footer-logo small { display: block; font-family: 'Barlow', sans-serif; font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: rgba(245,245,240,0.3); margin-top: 4px; }
-  .footer-links { display: flex; gap: 56px; }
-  .footer-col h4 { font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: var(--yellow); margin-bottom: 18px; }
-  .footer-col ul { list-style: none; }
-  .footer-col ul li { margin-bottom: 10px; }
-  .footer-col ul li a { font-size: 0.85rem; color: rgba(245,245,240,0.4); text-decoration: none; transition: color 0.2s; }
-  .footer-col ul li a:hover { color: var(--white); }
-  .footer-bottom { margin-top: 32px; display: flex; justify-content: space-between; align-items: center; }
-  .footer-bottom p { font-size: 0.75rem; color: rgba(245,245,240,0.22); }
+  footer {
+    background: var(--charcoal); color: rgba(255,255,255,0.4);
+    padding: 2rem 4rem;
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    font-size: 0.72rem; font-weight: 300;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  footer a { color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.2s; }
+  footer a:hover { color: var(--accent); }
+  .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: white; }
+  .footer-logo span { color: var(--accent); font-style: italic; }
 
-  /* FADE */
-  .fade-up { opacity: 0; transform: translateY(30px); transition: opacity 0.7s, transform 0.7s; }
-  .fade-up.visible { opacity: 1; transform: translateY(0); }
+  /* TOAST */
+  #toast {
+    position: fixed; bottom: 2rem; right: 2rem;
+    background: var(--charcoal); color: white;
+    padding: 1rem 1.5rem; z-index: 500;
+    font-size: 0.78rem; letter-spacing: 0.05em;
+    transform: translateY(80px); opacity: 0;
+    transition: all 0.4s cubic-bezier(0.23,1,0.32,1);
+    border-left: 3px solid var(--accent);
+  }
+  #toast.show { transform: translateY(0); opacity: 1; }
 
-  @media (max-width: 900px) {
-    nav { padding: 18px 20px; }
-    nav ul { display: none; }
-    section { padding: 64px 20px; }
-    .hero { padding: 0 20px 56px; }
-    .stats-bar { padding: 14px 20px; flex-wrap: wrap; }
-    .stat-item { border-right: none; }
-    .races-grid { grid-template-columns: 1fr; }
-    .drivers-layout { grid-template-columns: 1fr; gap: 32px; }
-    #sobre { grid-template-columns: 1fr; padding: 64px 20px; gap: 40px; }
-    .about-visual { height: 300px; }
-    .footer-top { flex-direction: column; gap: 28px; }
-    .footer-links { flex-direction: column; gap: 28px; }
+  /* REVEAL */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 1.5rem; }
+    .nav-links { display: none; }
+    section { padding: 4rem 1.5rem; }
+    .sobre-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .hero h1 { font-size: 3rem; }
+    .social-section, .frete-section, .newsletter { padding: 4rem 1.5rem; }
+    footer { padding: 1.5rem; flex-direction: column; text-align: center; }
+    .contact-row { gap: 2rem; }
+    .produtos-header { flex-direction: column; gap: 1rem; align-items: flex-start; }
   }
 </style>
 </head>
 <body>
 
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursorRing"></div>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- CART OVERLAY -->
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <h2>Seu Carrinho</h2>
+    <button class="close-cart" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty">
+      <div class="cart-empty-icon">🛍️</div>
+      <p>Seu carrinho está vazio</p>
+    </div>
+  </div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-total-row">
+      <span class="cart-total-label">Subtotal</span>
+      <span class="cart-total-value" id="cartTotal">R$ 0,00</span>
+    </div>
+    <div class="cart-total-row" style="margin-bottom:1.2rem">
+      <span class="cart-total-label" style="font-size:0.68rem">Frete calculado no checkout</span>
+      <span style="font-size:0.75rem;color:var(--light)">—</span>
+    </div>
+
+    <!-- PAGAMENTO -->
+    <div class="payment-tabs">
+      <button class="pay-tab active" onclick="switchPay('pix',this)">PIX</button>
+      <button class="pay-tab" onclick="switchPay('credito',this)">Crédito</button>
+      <button class="pay-tab" onclick="switchPay('debito',this)">Débito</button>
+    </div>
+    <div class="pay-content active" id="pay-pix">
+      <p style="font-size:0.75rem;color:var(--light);margin-bottom:0.8rem;margin-top:0.8rem">Chave PIX:</p>
+      <div class="pix-code">
+        <span>atelie.aleenzo@gmail.com</span>
+        <button class="copy-btn" onclick="copyPix()">Copiar</button>
+      </div>
+      <p style="font-size:0.72rem;color:var(--success);margin-top:0.6rem">✓ 5% de desconto no PIX</p>
+    </div>
+    <div class="pay-content" id="pay-credito">
+      <p class="parcelas" style="margin-top:0.8rem">Parcelamento em até <span>12x sem juros</span></p>
+      <p class="parcelas" style="margin-top:0.4rem">Aceitamos: Visa, Mastercard, Elo, Amex</p>
+    </div>
+    <div class="pay-content" id="pay-debito">
+      <p class="parcelas" style="margin-top:0.8rem">Aceitamos cartões de débito das principais bandeiras.</p>
+    </div>
+    <button class="checkout-btn" onclick="checkout()">Finalizar Compra</button>
+  </div>
+</div>
 
 <!-- NAV -->
-<nav>
-  <div class="logo">NASC<span>A</span>R</div>
-  <ul>
-    <li><a href="#corridas">Corridas</a></li>
-    <li><a href="#pilotos">Pilotos</a></li>
+<nav id="mainNav">
+  <a href="#" class="logo">Ateliê <span>Alê&Enzo</span></a>
+  <ul class="nav-links">
     <li><a href="#sobre">Sobre</a></li>
+    <li><a href="#produtos">Produtos</a></li>
+    <li><a href="#precos">Tabela</a></li>
+    <li><a href="#frete">Frete</a></li>
+    <li><a href="#contato">Contato</a></li>
   </ul>
+  <div class="nav-right">
+    <button class="cart-btn" onclick="toggleCart()">
+      🛍
+      <span id="cart-count">0</span>
+    </button>
+  </div>
 </nav>
 
-<!-- HERO — foto real: carros NASCAR nas bancadas de Daytona (Wikimedia Commons, CC BY-SA) -->
-<section class="hero">
-  <img class="hero-img"
-    src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/NASCAR_on_the_high_banks_of_Daytona_%282008%29.jpg/1280px-NASCAR_on_the_high_banks_of_Daytona_%282008%29.jpg"
-    alt="Carros NASCAR nas bancadas de Daytona">
+<!-- HERO -->
+<section class="hero" id="hero">
   <div class="hero-bg"></div>
-  <div class="hero-stripe"></div>
-  <div class="speed-lines"></div>
-  <div class="hero-content">
-    <div class="hero-tag">Temporada 2026</div>
-    <h1>
-      FULL
-      <span class="accent">THROTTLE</span>
-    </h1>
-    <p class="hero-sub">A emoção do motor americano. Velocidade extrema, rivalidades intensas e 36 corridas que definem lendas.</p>
-    <div class="hero-cta">
-      <a href="#corridas" class="btn-primary">Ver Calendário</a>
-      <a href="https://www.nascar.com" target="_blank" class="btn-ghost">Site Oficial ›</a>
-    </div>
+  <p class="hero-tag">✦ Handmade with love — Rio de Janeiro</p>
+  <h1>Ateliê<br><em>Alê&Enzo</em></h1>
+  <p class="hero-sub">Peças únicas feitas à mão com cuidado e afeto</p>
+  <div class="hero-cta">
+    <a href="#produtos" class="btn-primary">Ver Coleção</a>
+    <a href="#sobre" class="btn-outline">Nossa História</a>
   </div>
-</section>
-
-<!-- STATS BAR -->
-<div class="stats-bar">
-  <div class="stat-item"><div class="stat-num">36</div><div class="stat-label">Corridas na Temporada</div></div>
-  <div class="stat-item"><div class="stat-num">40</div><div class="stat-label">Carros por Prova</div></div>
-  <div class="stat-item"><div class="stat-num">320+</div><div class="stat-label">km/h Velocidade Máx.</div></div>
-  <div class="stat-item"><div class="stat-num">75</div><div class="stat-label">Anos de História</div></div>
-</div>
-
-<!-- TICKER -->
-<div class="ticker">
-  <div class="ticker-inner">
-    <span class="ticker-item">Daytona 500 — Fev 16</span>
-    <span class="ticker-item">Las Vegas 400 — Mar 2</span>
-    <span class="ticker-item">Phoenix Raceway — Mar 9</span>
-    <span class="ticker-item">Bristol Motor Speedway — Mar 16</span>
-    <span class="ticker-item">Circuit of the Americas — Mar 23</span>
-    <span class="ticker-item">Talladega 500 — Abr 28</span>
-    <span class="ticker-item">Charlotte 600 — Mai 25</span>
-    <span class="ticker-item">Daytona 500 — Fev 16</span>
-    <span class="ticker-item">Las Vegas 400 — Mar 2</span>
-    <span class="ticker-item">Phoenix Raceway — Mar 9</span>
-    <span class="ticker-item">Bristol Motor Speedway — Mar 16</span>
-    <span class="ticker-item">Circuit of the Americas — Mar 23</span>
-    <span class="ticker-item">Talladega 500 — Abr 28</span>
-    <span class="ticker-item">Charlotte 600 — Mai 25</span>
-  </div>
-</div>
-
-<!-- CORRIDAS -->
-<section id="corridas">
-  <div class="section-tag">Calendário 2026</div>
-  <h2 class="section-title">PRÓXIMAS<br>CORRIDAS</h2>
-  <div class="races-grid">
-
-    <!-- Daytona — foto real das bancadas de Daytona (CC BY-SA 3.0) -->
-    <div class="race-card fade-up">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/NASCAR_on_the_high_banks_of_Daytona_%282008%29.jpg/800px-NASCAR_on_the_high_banks_of_Daytona_%282008%29.jpg"
-        alt="Daytona NASCAR">
-      <div class="race-badge">Próxima</div>
-      <div class="race-number">01</div>
-      <div class="race-card-info">
-        <div class="race-date">6 Abr. 2026</div>
-        <div class="race-name">Pennzoil 400</div>
-        <div class="race-track">Las Vegas Motor Speedway — Nevada</div>
-        <a href="https://www.nascar.com/schedule/" target="_blank" class="race-link">Ver no NASCAR.com →</a>
-      </div>
-    </div>
-
-    <!-- Bristol — foto aérea da pista (CC BY-SA 2.0) -->
-    <div class="race-card fade-up">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Bristol_Motor_Speedway_from_above.jpg/800px-Bristol_Motor_Speedway_from_above.jpg"
-        alt="Bristol Motor Speedway">
-      <div class="race-number">02</div>
-      <div class="race-card-info">
-        <div class="race-date">13 Abr. 2026</div>
-        <div class="race-name">Food City 500</div>
-        <div class="race-track">Bristol Motor Speedway — Tennessee</div>
-        <a href="https://www.nascar.com/schedule/" target="_blank" class="race-link">Ver no NASCAR.com →</a>
-      </div>
-    </div>
-
-    <!-- Talladega — foto aérea (CC BY-SA 3.0) -->
-    <div class="race-card fade-up">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Talladega_Superspeedway_aerial.jpg/800px-Talladega_Superspeedway_aerial.jpg"
-        alt="Talladega Superspeedway">
-      <div class="race-number">03</div>
-      <div class="race-card-info">
-        <div class="race-date">28 Abr. 2026</div>
-        <div class="race-name">GEICO 500</div>
-        <div class="race-track">Talladega Superspeedway — Alabama</div>
-        <a href="https://www.nascar.com/schedule/" target="_blank" class="race-link">Ver no NASCAR.com →</a>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- PILOTOS -->
-<section id="pilotos">
-  <div class="section-tag">Copa Série 2026</div>
-  <h2 class="section-title">PILOTOS<br>EM DESTAQUE</h2>
-  <div class="drivers-layout">
-
-    <!-- Foto: corrida NASCAR com carros em pista (Wikimedia Commons) -->
-    <div class="driver-big fade-up">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/NASCAR_Nextel_Cup_Series_LifeLock_400_2007.jpg/600px-NASCAR_Nextel_Cup_Series_LifeLock_400_2007.jpg"
-        alt="NASCAR Cup Series">
-      <div class="driver-big-info">
-        <div class="driver-num">24</div>
-        <div class="driver-name">William Byron</div>
-        <div class="driver-team">Hendrick Motorsports — Chevrolet</div>
-      </div>
-    </div>
-
-    <div class="drivers-list fade-up">
-      <a class="driver-row" href="https://www.nascar.com/william-byron/driver-page/" target="_blank">
-        <div class="dr-rank">1</div>
-        <div class="dr-color" style="background:#0a47a1;"></div>
-        <div class="dr-info">
-          <div class="dr-name">William Byron</div>
-          <div class="dr-team-s">Hendrick Motorsports · #24 · Chevrolet</div>
-        </div>
-        <div class="dr-pts">2.230</div>
-      </a>
-      <a class="driver-row" href="https://www.nascar.com/denny-hamlin/driver-page/" target="_blank">
-        <div class="dr-rank">2</div>
-        <div class="dr-color" style="background:#e30000;"></div>
-        <div class="dr-info">
-          <div class="dr-name">Denny Hamlin</div>
-          <div class="dr-team-s">Joe Gibbs Racing · #11 · Toyota</div>
-        </div>
-        <div class="dr-pts">2.074</div>
-      </a>
-      <a class="driver-row" href="https://www.nascar.com/kyle-larson/driver-page/" target="_blank">
-        <div class="dr-rank">3</div>
-        <div class="dr-color" style="background:#c00;"></div>
-        <div class="dr-info">
-          <div class="dr-name">Kyle Larson</div>
-          <div class="dr-team-s">Hendrick Motorsports · #5 · Chevrolet</div>
-        </div>
-        <div class="dr-pts">2.010</div>
-      </a>
-      <a class="driver-row" href="https://www.nascar.com/christopher-bell/driver-page/" target="_blank">
-        <div class="dr-rank">4</div>
-        <div class="dr-color" style="background:#ff6600;"></div>
-        <div class="dr-info">
-          <div class="dr-name">Christopher Bell</div>
-          <div class="dr-team-s">Joe Gibbs Racing · #20 · Toyota</div>
-        </div>
-        <div class="dr-pts">1.982</div>
-      </a>
-      <a class="driver-row" href="https://www.nascar.com/joey-logano/driver-page/" target="_blank">
-        <div class="dr-rank">5</div>
-        <div class="dr-color" style="background:#ffd600;"></div>
-        <div class="dr-info">
-          <div class="dr-name">Joey Logano</div>
-          <div class="dr-team-s">Team Penske · #22 · Ford</div>
-        </div>
-        <div class="dr-pts">1.940</div>
-      </a>
-      <a class="driver-row" href="https://www.nascar.com/chase-elliott/driver-page/" target="_blank">
-        <div class="dr-rank">6</div>
-        <div class="dr-color" style="background:#00b140;"></div>
-        <div class="dr-info">
-          <div class="dr-name">Chase Elliott</div>
-          <div class="dr-team-s">Hendrick Motorsports · #9 · Chevrolet</div>
-        </div>
-        <div class="dr-pts">1.904</div>
-      </a>
-      <div style="margin-top:16px;text-align:right;">
-        <a href="https://www.nascar.com/standings/" target="_blank"
-          style="font-family:'Barlow Condensed',sans-serif;font-size:0.75rem;letter-spacing:3px;text-transform:uppercase;color:var(--yellow);text-decoration:none;opacity:0.7;transition:opacity 0.2s;"
-          onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
-          Standings completo em NASCAR.com →
-        </a>
-      </div>
-    </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>Rolar</span>
   </div>
 </section>
 
 <!-- SOBRE -->
-<section id="sobre">
-  <div class="about-visual fade-up">
-    <!-- Foto: pit stop NASCAR (Wikimedia Commons, CC BY-SA) -->
-    <img class="about-img-main"
-      src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/NASCAR_Nextel_Cup_Series_LifeLock_400_2007.jpg/800px-NASCAR_Nextel_Cup_Series_LifeLock_400_2007.jpg"
-      alt="NASCAR corrida">
-    <img class="about-img-accent"
-      src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/NASCAR_on_the_high_banks_of_Daytona_%282008%29.jpg/640px-NASCAR_on_the_high_banks_of_Daytona_%282008%29.jpg"
-      alt="Daytona bancadas">
-    <div class="about-badge">
-      <span class="yr">1948</span>
-      <span class="yr-label">Fundação</span>
+<section class="sobre" id="sobre">
+  <div class="sobre-grid">
+    <div class="sobre-img reveal">
+      <div class="sobre-img-inner">A&E</div>
+    </div>
+    <div class="sobre-text reveal">
+      <p class="section-label">Nossa História</p>
+      <h2 class="section-title">Feito com <em>alma</em> e dedicação</h2>
+      <div class="divider"></div>
+      <p>O Ateliê Alê&Enzo nasceu da paixão de duas almas criativas que acreditam que cada peça carrega uma história. Cada item é criado à mão, com materiais selecionados com carinho e atenção aos mínimos detalhes.</p>
+      <p>Aqui você encontra peças exclusivas que unem arte, funcionalidade e afeto — porque acreditamos que o que você usa ou presenteia deve ser tão especial quanto você.</p>
+      <div class="sobre-stats">
+        <div>
+          <div class="stat-num">9+</div>
+          <div class="stat-label">Anos de Ateliê</div>
+        </div>
+        <div>
+          <div class="stat-num">500+</div>
+          <div class="stat-label">Peças Entregues</div>
+        </div>
+        <div>
+          <div class="stat-num">100%</div>
+          <div class="stat-label">Handmade</div>
+        </div>
+      </div>
     </div>
   </div>
+</section>
 
-  <div class="about-text fade-up">
-    <div class="section-tag">O que é a NASCAR?</div>
-    <h2 class="section-title">MOTOR,<br>ADRENALINA<br>& HISTÓRIA</h2>
-    <p>A NASCAR — <em>National Association for Stock Car Auto Racing</em> — é a maior liga de corridas de stock cars do mundo. Fundada em 1948 por Bill France Sr., tornou-se o esporte a motor mais popular dos Estados Unidos.</p>
-    <p>Com corridas em óvalos de alta velocidade, pistas de estrada e superspeedways, a NASCAR oferece espetáculos onde centímetros e décimos de segundo decidem campeões.</p>
-    <div class="about-facts">
-      <div class="fact"><div class="fact-num">75+</div><div class="fact-desc">Anos de competição ininterrupta</div></div>
-      <div class="fact"><div class="fact-num">30+</div><div class="fact-desc">Pistas diferentes por temporada</div></div>
-      <div class="fact"><div class="fact-num">4M+</div><div class="fact-desc">Fãs nos estádios por ano</div></div>
-      <div class="fact"><div class="fact-num">#1</div><div class="fact-desc">Liga de automobilismo dos EUA</div></div>
+<!-- PRODUTOS -->
+<section class="produtos" id="produtos">
+  <div class="produtos-header">
+    <div>
+      <p class="section-label">Coleção</p>
+      <h2 class="section-title">Nossos <em>Produtos</em></h2>
     </div>
-    <div style="margin-top:36px;">
-      <a href="https://www.nascar.com/news/" target="_blank" class="btn-primary">Ver notícias da NASCAR</a>
+    <div class="filter-tabs">
+      <button class="filter-tab active" onclick="filterProducts('todos',this)">Todos</button>
+      <button class="filter-tab" onclick="filterProducts('bijoux',this)">Bijoux</button>
+      <button class="filter-tab" onclick="filterProducts('presentes',this)">Presentes</button>
+      <button class="filter-tab" onclick="filterProducts('decoracao',this)">Decoração</button>
     </div>
+  </div>
+  <div class="product-grid" id="productGrid"></div>
+</section>
+
+<!-- TABELA DE PREÇOS -->
+<section class="precos" id="precos">
+  <div class="precos-inner">
+    <p class="section-label reveal">Transparência</p>
+    <h2 class="section-title reveal">Tabela de <em>Preços</em></h2>
+    <div class="divider reveal"></div>
+    <table class="preco-table reveal">
+      <thead>
+        <tr>
+          <th>Produto / Serviço</th>
+          <th>Descrição</th>
+          <th>Tamanho / Qtd</th>
+          <th>Preço</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="4" class="preco-category">— Bijoux & Acessórios —</td></tr>
+        <tr><td>Brinco Artesanal</td><td>Resina + flores secas</td><td>Unitário (par)</td><td class="price-cell">R$ 35,00</td></tr>
+        <tr><td>Colar Personalizado</td><td>Corrente + pingente</td><td>Unitário</td><td class="price-cell">R$ 55,00</td></tr>
+        <tr><td>Pulseira Trançada</td><td>Macramê colorido</td><td>Unitário</td><td class="price-cell">R$ 28,00</td></tr>
+        <tr><td>Anel em Argila</td><td>Polymer clay</td><td>Unitário</td><td class="price-cell">R$ 22,00</td></tr>
+        <tr><td colspan="4" class="preco-category">— Presentes & Kits —</td></tr>
+        <tr><td>Kit Amor</td><td>Brinco + Pulseira + Caixinha</td><td>Kit completo</td><td class="price-cell">R$ 85,00</td></tr>
+        <tr><td>Caixinha Surpresa</td><td>3 peças à escolha</td><td>Kit</td><td class="price-cell">R$ 70,00</td></tr>
+        <tr><td>Kit Maternidade</td><td>Peças especiais para mamãe</td><td>Kit</td><td class="price-cell">R$ 110,00</td></tr>
+        <tr><td colspan="4" class="preco-category">— Decoração & Papelaria —</td></tr>
+        <tr><td>Tag Personalizada</td><td>Para presentes e eventos</td><td>10 unidades</td><td class="price-cell">R$ 25,00</td></tr>
+        <tr><td>Enfeite de Parede</td><td>Macramê decorativo</td><td>30cm</td><td class="price-cell">R$ 90,00</td></tr>
+        <tr><td>Porta-Retrato</td><td>Argila + personalização</td><td>10x15cm</td><td class="price-cell">R$ 45,00</td></tr>
+        <tr><td colspan="4" class="preco-category">— Serviços Especiais —</td></tr>
+        <tr><td>Encomenda Especial</td><td>Peça personalizada sob medida</td><td>Consultar</td><td class="price-cell">A partir de R$ 60,00</td></tr>
+        <tr><td>Lembrancinha Evento</td><td>Casamento, aniversário, etc.</td><td>Mín. 20 unid.</td><td class="price-cell">A partir de R$ 8,00/un</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:0.75rem;color:var(--light);margin-top:1.5rem;text-align:center;font-weight:300">
+      * Preços sujeitos a alteração. Frete não incluso. Encomendas com prazo de 7 a 14 dias úteis.
+    </p>
+  </div>
+</section>
+
+<!-- FRETE -->
+<section class="frete-section" id="frete">
+  <div style="text-align:center">
+    <p class="section-label reveal">Entrega</p>
+    <h2 class="section-title reveal">Calcule o <em>Frete</em></h2>
+  </div>
+  <div class="frete-box reveal">
+    <h3>Informe seu CEP</h3>
+    <div class="input-group">
+      <label>CEP</label>
+      <div class="input-row">
+        <input class="input-field" id="cepInput" type="text" placeholder="00000-000" maxlength="9" oninput="formatCep(this)">
+        <button class="btn-frete" onclick="calcFrete()">Calcular</button>
+      </div>
+    </div>
+    <div id="frete-result">
+      <div class="frete-option"><span class="frete-name">📦 PAC (Correios)</span><span class="frete-price" id="frete-pac">—</span></div>
+      <div class="frete-option"><span class="frete-name">⚡ SEDEX</span><span class="frete-price" id="frete-sedex">—</span></div>
+      <div class="frete-option"><span class="frete-name">🛵 Motoboy Local (RJ)</span><span class="frete-price" id="frete-moto">—</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL / CONTATO -->
+<section class="social-section" id="contato">
+  <p class="section-label">Conecte-se</p>
+  <h2 class="section-title">Nos siga nas <em>redes</em></h2>
+  <div class="divider"></div>
+  <div class="social-links">
+    <a href="https://www.instagram.com/atelierale_enzo" target="_blank" class="social-link">
+      <span class="social-icon">📸</span>
+      <span class="social-name">Instagram</span>
+    </a>
+    <a href="https://www.facebook.com/Alessa.Enzo" target="_blank" class="social-link">
+      <span class="social-icon">📘</span>
+      <span class="social-name">Facebook</span>
+    </a>
+    <a href="https://wa.me/5521979990967" target="_blank" class="social-link">
+      <span class="social-icon">💬</span>
+      <span class="social-name">WhatsApp</span>
+    </a>
+  </div>
+  <div class="contact-row">
+    <div class="contact-item">
+      <div class="contact-label">Email</div>
+      <div class="contact-value">alessakika@gmail.com</div>
+    </div>
+    <div class="contact-item">
+      <div class="contact-label">WhatsApp</div>
+      <div class="contact-value">(21) 9 7999-0967</div>
+    </div>
+    <div class="contact-item">
+      <div class="contact-label">Localização</div>
+      <div class="contact-value">Rio de Janeiro, RJ</div>
+    </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter">
+  <p class="section-label reveal">Fique por dentro</p>
+  <h2 class="section-title reveal">Novidades em <em>primeira mão</em></h2>
+  <p style="font-size:0.82rem;color:var(--light);margin-top:0.8rem;font-weight:300" class="reveal">Receba lançamentos, promoções e inspirações direto no seu e-mail.</p>
+  <div class="newsletter-form reveal">
+    <input class="newsletter-input" type="email" placeholder="seu@email.com">
+    <button class="newsletter-btn" onclick="subscribeNewsletter()">Inscrever</button>
   </div>
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-top">
-    <div>
-      <div class="footer-logo">NASC<span>A</span>R<small>Full Throttle 2026</small></div>
-    </div>
-    <div class="footer-links">
-      <div class="footer-col">
-        <h4>Competição</h4>
-        <ul>
-          <li><a href="https://www.nascar.com/nascar-cup-series/" target="_blank">Copa Série</a></li>
-          <li><a href="https://www.nascar.com/xfinity-series/" target="_blank">Xfinity Series</a></li>
-          <li><a href="https://www.nascar.com/craftsman-truck-series/" target="_blank">Truck Series</a></li>
-          <li><a href="https://www.nascar.com/standings/" target="_blank">Standings 2026</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Conteúdo</h4>
-        <ul>
-          <li><a href="https://www.nascar.com/news/" target="_blank">Notícias</a></li>
-          <li><a href="https://www.nascar.com/results/" target="_blank">Resultados</a></li>
-          <li><a href="https://www.nascar.com/video/" target="_blank">Vídeos</a></li>
-          <li><a href="https://www.nascar.com/schedule/" target="_blank">Calendário</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Fã</h4>
-        <ul>
-          <li><a href="https://www.nascar.com/tickets/" target="_blank">Ingressos</a></li>
-          <li><a href="https://store.nascar.com/" target="_blank">Loja Oficial</a></li>
-          <li><a href="https://fantasy.nascar.com/" target="_blank">Fantasy NASCAR</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <p>© 2026 NASCAR Full Throttle — Site criado para fins educacionais. Fotos via Wikimedia Commons (CC BY-SA).</p>
-    <p>Motor americano, emoção global.</p>
+  <div class="footer-logo">Ateliê <span>Ale&Enzo</span></div>
+  <div>© 2025 Ateliê Ale&Enzo. Todos os direitos reservados.</div>
+  <div style="display:flex;gap:1.5rem">
+    <a href="#">Política de Privacidade</a>
+    <a href="#">Trocas & Devoluções</a>
   </div>
 </footer>
 
-<script>
-  // Cursor personalizado
-  const cursor = document.getElementById('cursor');
-  const ring = document.getElementById('cursorRing');
-  let mx = 0, my = 0, rx = 0, ry = 0;
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    cursor.style.left = mx + 'px';
-    cursor.style.top = my + 'px';
-  });
-  (function animRing() {
-    rx += (mx - rx) * 0.12;
-    ry += (my - ry) * 0.12;
-    ring.style.left = rx + 'px';
-    ring.style.top = ry + 'px';
-    requestAnimationFrame(animRing);
-  })();
+<!-- TOAST -->
+<div id="toast"></div>
 
-  // Fade ao rolar a página
-  const fades = document.querySelectorAll('.fade-up');
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach((e, i) => {
-      if (e.isIntersecting) {
-        setTimeout(() => e.target.classList.add('visible'), i * 120);
-        obs.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.1 });
-  fades.forEach(el => obs.observe(el));
+<script>
+// CURSOR
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+const hoverEls = 'a, button, .product-card, .social-link, .filter-tab, .pay-tab';
+document.querySelectorAll(hoverEls).forEach(el => {
+  el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+  el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+});
+function animCursor() {
+  cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+  rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+  requestAnimationFrame(animCursor);
+}
+animCursor();
+
+// NAV SCROLL
+const nav = document.getElementById('mainNav');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 50));
+
+// REVEAL
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// PRODUCTS DATA
+const products = [
+  { id:1, name:'Brinco Floral', desc:'Resina com flores secas', price:35, oldPrice:45, emoji:'🌸', badge:'Novo', cat:'bijoux' },
+  { id:2, name:'Colar Lua', desc:'Corrente dourada + pingente', price:55, oldPrice:null, emoji:'🌙', badge:null, cat:'bijoux' },
+  { id:3, name:'Kit Amor', desc:'3 peças + caixinha especial', price:85, oldPrice:100, emoji:'💝', badge:'Mais Vendido', cat:'presentes' },
+  { id:4, name:'Pulseira Macramê', desc:'Trançada à mão, colorida', price:28, oldPrice:null, emoji:'🧵', badge:null, cat:'bijoux' },
+  { id:5, name:'Enfeite de Parede', desc:'Macramê decorativo 30cm', price:90, oldPrice:null, emoji:'🪢', badge:null, cat:'decoracao' },
+  { id:6, name:'Caixinha Surpresa', desc:'3 peças selecionadas', price:70, oldPrice:80, emoji:'🎁', badge:'Oferta', cat:'presentes' },
+  { id:7, name:'Anel Argila', desc:'Polymer clay artesanal', price:22, oldPrice:null, emoji:'💍', badge:null, cat:'bijoux' },
+  { id:8, name:'Tag Personalizada', desc:'Para presentes (10 un)', price:25, oldPrice:null, emoji:'🏷️', badge:null, cat:'decoracao' },
+];
+
+let cartItems = [];
+let activeFilter = 'todos';
+
+function renderProducts(filter) {
+  const grid = document.getElementById('productGrid');
+  const filtered = filter === 'todos' ? products : products.filter(p => p.cat === filter);
+  grid.innerHTML = filtered.map(p => `
+    <div class="product-card" data-id="${p.id}">
+      <div class="product-img">
+        <div class="product-emoji">${p.emoji}</div>
+        ${p.badge ? `<div class="product-badge">${p.badge}</div>` : ''}
+        <div class="product-overlay">
+          <button class="overlay-btn" onclick="addToCart(${p.id})">Adicionar ao Carrinho</button>
+        </div>
+      </div>
+      <div class="product-info">
+        <div class="product-name">${p.name}</div>
+        <div class="product-desc">${p.desc}</div>
+        <div class="product-footer">
+          <div>
+            ${p.oldPrice ? `<span class="product-price-old">R$ ${p.oldPrice},00</span>` : ''}
+            <span class="product-price">R$ ${p.price},00</span>
+          </div>
+          <button class="add-cart" onclick="addToCart(${p.id})" title="Adicionar">+</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  document.querySelectorAll('.product-card a, .product-card button').forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+  });
+}
+renderProducts('todos');
+
+function filterProducts(cat, btn) {
+  activeFilter = cat;
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderProducts(cat);
+}
+
+// CART
+function addToCart(id) {
+  const product = products.find(p => p.id === id);
+  const existing = cartItems.find(i => i.id === id);
+  if (existing) existing.qty++;
+  else cartItems.push({ ...product, qty: 1 });
+  updateCart();
+  showToast(`✓ ${product.name} adicionado!`);
+}
+
+function updateCart() {
+  const count = cartItems.reduce((a, i) => a + i.qty, 0);
+  const countEl = document.getElementById('cart-count');
+  countEl.textContent = count;
+  countEl.style.display = count > 0 ? 'flex' : 'none';
+
+  const itemsEl = document.getElementById('cartItems');
+  const footerEl = document.getElementById('cartFooter');
+  if (cartItems.length === 0) {
+    itemsEl.innerHTML = '<div class="cart-empty"><div class="cart-empty-icon">🛍️</div><p>Seu carrinho está vazio</p></div>';
+    footerEl.style.display = 'none';
+    return;
+  }
+  footerEl.style.display = 'block';
+  itemsEl.innerHTML = cartItems.map(item => `
+    <div class="cart-item">
+      <div class="cart-item-img">${item.emoji}</div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-price">R$ ${item.price},00</div>
+        <div class="cart-item-qty">
+          <button class="qty-btn" onclick="changeQty(${item.id},-1)">−</button>
+          <span class="qty-num">${item.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${item.id},1)">+</button>
+          <button class="remove-item" onclick="removeItem(${item.id})">Remover</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  const total = cartItems.reduce((a, i) => a + i.price * i.qty, 0);
+  document.getElementById('cartTotal').textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+}
+
+function changeQty(id, delta) {
+  const item = cartItems.find(i => i.id === id);
+  item.qty += delta;
+  if (item.qty <= 0) cartItems = cartItems.filter(i => i.id !== id);
+  updateCart();
+}
+function removeItem(id) { cartItems = cartItems.filter(i => i.id !== id); updateCart(); }
+
+function toggleCart() {
+  document.getElementById('cartSidebar').classList.toggle('open');
+  document.getElementById('cartOverlay').classList.toggle('open');
+}
+
+function switchPay(type, btn) {
+  document.querySelectorAll('.pay-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.pay-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('pay-' + type).classList.add('active');
+}
+
+function copyPix() { navigator.clipboard.writeText('atelie.aleenzo@gmail.com'); showToast('Chave PIX copiada! 🎉'); }
+
+function checkout() {
+  if (cartItems.length === 0) { showToast('Seu carrinho está vazio'); return; }
+  showToast('Redirecionando para o pagamento... 🔒');
+}
+
+// FRETE
+function formatCep(el) {
+  let v = el.value.replace(/\D/g,'');
+  if (v.length > 5) v = v.slice(0,5) + '-' + v.slice(5,8);
+  el.value = v;
+}
+
+function calcFrete() {
+  const cep = document.getElementById('cepInput').value.replace(/\D/g,'');
+  if (cep.length < 8) { showToast('Digite um CEP válido'); return; }
+  const result = document.getElementById('frete-result');
+  const isLocal = cep.startsWith('20') || cep.startsWith('21') || cep.startsWith('22') || cep.startsWith('23');
+  const pac = isLocal ? 'R$ 12,50' : 'R$ 18,90';
+  const sedex = isLocal ? 'R$ 22,00' : 'R$ 35,00';
+  const moto = isLocal ? 'R$ 15,00' : 'Indisponível';
+  document.getElementById('frete-pac').textContent = pac + ' (5–10 dias úteis)';
+  document.getElementById('frete-sedex').textContent = sedex + ' (1–3 dias úteis)';
+  document.getElementById('frete-moto').textContent = moto + (isLocal ? ' (mesmo dia)' : '');
+  result.style.display = 'block';
+  showToast('Frete calculado com sucesso! 📦');
+}
+
+// NEWSLETTER
+function subscribeNewsletter() { showToast('Inscrição realizada! Bem-vinda(o) 💛'); }
+
+// TOAST
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
 </script>
 </body>
 </html>
