@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ateliê Ale&Enzo</title>
+<title>Ateliê Alê & Enzo — Costura Artesanal</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -17,6 +17,7 @@
     --border: #E2DDD8;
     --success: #7A9E7E;
     --error: #C17070;
+    --pix-green: #4CAF50;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
@@ -112,9 +113,8 @@
     font-size: 0.6rem;
     width: 16px; height: 16px;
     border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
+    display: none; align-items: center; justify-content: center;
     font-weight: 500;
-    display: none;
   }
 
   /* HERO */
@@ -132,15 +132,6 @@
     background: radial-gradient(ellipse at 70% 30%, rgba(184,151,126,0.12) 0%, transparent 60%),
                 radial-gradient(ellipse at 20% 80%, rgba(184,151,126,0.08) 0%, transparent 50%);
   }
-  .hero-line {
-    position: absolute;
-    width: 1px; background: var(--border);
-    top: 0; bottom: 0; left: 50%;
-    opacity: 0.5;
-    animation: lineReveal 1.4s ease forwards;
-    transform-origin: top;
-  }
-  @keyframes lineReveal { from { scaleY: 0; } to { scaleY: 1; } }
   .hero-tag {
     font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
     color: var(--accent); margin-bottom: 2rem;
@@ -298,7 +289,7 @@
   }
   .product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
     gap: 2rem;
     max-width: 1200px; margin: 0 auto;
   }
@@ -325,7 +316,7 @@
   .product-overlay {
     position: absolute; inset: 0;
     background: rgba(28,28,26,0.6);
-    display: flex; align-items: center; justify-content: center;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.8rem;
     opacity: 0; transition: opacity 0.3s;
   }
   .product-card:hover .product-overlay { opacity: 1; }
@@ -348,12 +339,43 @@
     font-size: 1.2rem; font-weight: 400;
     color: var(--charcoal); margin-bottom: 0.3rem;
   }
-  .product-desc { font-size: 0.78rem; color: var(--light); font-weight: 300; margin-bottom: 1rem; }
-  .product-footer { display: flex; align-items: center; justify-content: space-between; }
-  .product-price { font-size: 1.1rem; font-weight: 500; color: var(--charcoal); }
-  .product-price-old { font-size: 0.8rem; color: var(--light); text-decoration: line-through; margin-right: 0.4rem; }
+  .product-desc { font-size: 0.78rem; color: var(--light); font-weight: 300; margin-bottom: 0.8rem; }
+
+  /* SIZE SELECTOR */
+  .size-selector {
+    display: flex; gap: 0.4rem; margin-bottom: 0.9rem; flex-wrap: wrap;
+  }
+  .size-btn {
+    padding: 0.28rem 0.65rem;
+    border: 1px solid var(--border);
+    background: transparent;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.65rem; letter-spacing: 0.08em;
+    color: var(--mid); cursor: none;
+    transition: all 0.18s;
+  }
+  .size-btn.active {
+    background: var(--charcoal); color: white; border-color: var(--charcoal);
+  }
+  .size-btn:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
+
+  .product-footer { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; }
+  .price-block { display: flex; flex-direction: column; gap: 0.15rem; }
+  .price-credit {
+    font-size: 0.78rem; color: var(--light); font-weight: 300;
+  }
+  .price-credit span { text-decoration: line-through; }
+  .product-price { font-size: 1.05rem; font-weight: 500; color: var(--charcoal); }
+  .price-pix {
+    font-size: 0.78rem; color: var(--pix-green); font-weight: 500;
+    display: flex; align-items: center; gap: 0.3rem;
+  }
+  .price-pix-badge {
+    font-size: 0.58rem; background: #e8f5e9; color: var(--pix-green);
+    padding: 0.1rem 0.4rem; border-radius: 2px; letter-spacing: 0.06em;
+  }
   .add-cart {
-    width: 36px; height: 36px;
+    width: 36px; height: 36px; flex-shrink: 0;
     border: 1px solid var(--charcoal);
     background: none; color: var(--charcoal);
     font-size: 1.1rem; cursor: none;
@@ -390,6 +412,7 @@
     font-size: 1rem; color: var(--charcoal); font-weight: 400;
   }
   .preco-table td.price-cell { font-weight: 500; color: var(--accent); }
+  .preco-table td.pix-cell { font-weight: 500; color: var(--pix-green); font-size: 0.82rem; }
   .preco-category {
     background: var(--cream) !important;
     font-size: 0.65rem !important;
@@ -495,7 +518,9 @@
   }
   .cart-item-info { flex: 1; }
   .cart-item-name { font-family: 'Cormorant Garamond', serif; font-size: 1rem; }
+  .cart-item-size { font-size: 0.7rem; color: var(--light); margin-top: 0.1rem; }
   .cart-item-price { font-size: 0.8rem; color: var(--accent); margin-top: 0.2rem; }
+  .cart-item-pix { font-size: 0.72rem; color: var(--pix-green); }
   .cart-item-qty {
     display: flex; align-items: center; gap: 0.6rem;
     margin-top: 0.6rem;
@@ -515,9 +540,9 @@
   .cart-total-row { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
   .cart-total-label { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--light); }
   .cart-total-value { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; }
+  .cart-pix-total { font-size: 0.82rem; color: var(--pix-green); font-weight: 500; }
 
   /* PAGAMENTO */
-  .pagamento-section { background: var(--warm-white); padding: 2rem; }
   .payment-tabs {
     display: flex; gap: 0; margin-top: 1rem;
     border: 1px solid var(--border);
@@ -663,6 +688,18 @@
   .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
   .reveal.visible { opacity: 1; transform: translateY(0); }
 
+  /* PIX BANNER */
+  .pix-banner {
+    background: linear-gradient(135deg, #1b5e20, #2e7d32);
+    color: white;
+    text-align: center;
+    padding: 0.7rem 2rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .pix-banner strong { color: #a5d6a7; }
+
   @media (max-width: 768px) {
     nav { padding: 0 1.5rem; }
     .nav-links { display: none; }
@@ -681,6 +718,11 @@
 <div id="cursor"></div>
 <div id="cursor-ring"></div>
 
+<!-- PIX BANNER -->
+<div class="pix-banner">
+  💚 Pague com <strong>PIX</strong> e ganhe <strong>10% de desconto</strong> em todos os produtos
+</div>
+
 <!-- CART OVERLAY -->
 <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
 <div class="cart-sidebar" id="cartSidebar">
@@ -696,8 +738,12 @@
   </div>
   <div class="cart-footer" id="cartFooter" style="display:none">
     <div class="cart-total-row">
-      <span class="cart-total-label">Subtotal</span>
+      <span class="cart-total-label">Subtotal (Cartão)</span>
       <span class="cart-total-value" id="cartTotal">R$ 0,00</span>
+    </div>
+    <div class="cart-total-row" style="margin-bottom:0.4rem">
+      <span class="cart-total-label" style="color:var(--pix-green)">💚 Subtotal PIX (−10%)</span>
+      <span class="cart-pix-total" id="cartPixTotal">R$ 0,00</span>
     </div>
     <div class="cart-total-row" style="margin-bottom:1.2rem">
       <span class="cart-total-label" style="font-size:0.68rem">Frete calculado no checkout</span>
@@ -716,7 +762,7 @@
         <span>atelie.aleenzo@gmail.com</span>
         <button class="copy-btn" onclick="copyPix()">Copiar</button>
       </div>
-      <p style="font-size:0.72rem;color:var(--success);margin-top:0.6rem">✓ 5% de desconto no PIX</p>
+      <p style="font-size:0.72rem;color:var(--pix-green);margin-top:0.6rem">💚 10% de desconto no PIX — automático!</p>
     </div>
     <div class="pay-content" id="pay-credito">
       <p class="parcelas" style="margin-top:0.8rem">Parcelamento em até <span>12x sem juros</span></p>
@@ -731,7 +777,7 @@
 
 <!-- NAV -->
 <nav id="mainNav">
-  <a href="#" class="logo">Ateliê <span>Alê&Enzo</span></a>
+  <a href="#" class="logo">Ateliê <span>Alê & Enzo</span></a>
   <ul class="nav-links">
     <li><a href="#sobre">Sobre</a></li>
     <li><a href="#produtos">Produtos</a></li>
@@ -750,9 +796,9 @@
 <!-- HERO -->
 <section class="hero" id="hero">
   <div class="hero-bg"></div>
-  <p class="hero-tag">✦ Handmade with love — Rio de Janeiro</p>
+  <p class="hero-tag">✦ Costura Artesanal — Rio de Janeiro</p>
   <h1>Ateliê<br><em>Alê&Enzo</em></h1>
-  <p class="hero-sub">Peças únicas feitas à mão com cuidado e afeto</p>
+  <p class="hero-sub">Bolsas, nécessaires e acessórios costurados à mão com amor</p>
   <div class="hero-cta">
     <a href="#produtos" class="btn-primary">Ver Coleção</a>
     <a href="#sobre" class="btn-outline">Nossa História</a>
@@ -771,17 +817,17 @@
     </div>
     <div class="sobre-text reveal">
       <p class="section-label">Nossa História</p>
-      <h2 class="section-title">Feito com <em>alma</em> e dedicação</h2>
+      <h2 class="section-title">Costurado com <em>alma</em> e cuidado</h2>
       <div class="divider"></div>
-      <p>O Ateliê Alê&Enzo nasceu da paixão de duas almas criativas que acreditam que cada peça carrega uma história. Cada item é criado à mão, com materiais selecionados com carinho e atenção aos mínimos detalhes.</p>
-      <p>Aqui você encontra peças exclusivas que unem arte, funcionalidade e afeto — porque acreditamos que o que você usa ou presenteia deve ser tão especial quanto você.</p>
+      <p>O Ateliê Alê & Enzo nasceu da paixão pela costura artesanal e pela criação de peças que aliam beleza, função e durabilidade. Cada bolsa, necessário e acessório é costurado à mão, do corte ao acabamento.</p>
+      <p>Trabalhamos com tecidos e materiais selecionados, garantindo que cada peça seja única e feita especialmente para quem a carrega. Acreditamos que um bom acessório conta a história de quem o usa.</p>
       <div class="sobre-stats">
         <div>
           <div class="stat-num">9+</div>
           <div class="stat-label">Anos de Ateliê</div>
         </div>
         <div>
-          <div class="stat-num">500+</div>
+          <div class="stat-num">650+</div>
           <div class="stat-label">Peças Entregues</div>
         </div>
         <div>
@@ -798,13 +844,13 @@
   <div class="produtos-header">
     <div>
       <p class="section-label">Coleção</p>
-      <h2 class="section-title">Nossos <em>Produtos</em></h2>
+      <h2 class="section-title">Nossas <em>Peças</em></h2>
     </div>
     <div class="filter-tabs">
       <button class="filter-tab active" onclick="filterProducts('todos',this)">Todos</button>
-      <button class="filter-tab" onclick="filterProducts('Bolsas',this)">Bolsas</button>
-      <button class="filter-tab" onclick="filterProducts('presentes',this)">Presentes</button>
-      <button class="filter-tab" onclick="filterProducts('Acessórios',this)">Acessórios</button>
+      <button class="filter-tab" onclick="filterProducts('bolsas',this)">Bolsas</button>
+      <button class="filter-tab" onclick="filterProducts('marmita',this)">Marmita</button>
+      <button class="filter-tab" onclick="filterProducts('acessorios',this)">Acessórios</button>
     </div>
   </div>
   <div class="product-grid" id="productGrid"></div>
@@ -821,27 +867,29 @@
         <tr>
           <th>Produto / Serviço</th>
           <th>Descrição</th>
-          <th>Tamanho / Qtd</th>
-          <th>Preço</th>
+          <th>Cartão / Débito</th>
+          <th>💚 PIX (−10%)</th>
         </tr>
       </thead>
       <tbody>
-        <tr><td colspan="4" class="preco-category">— Bijoux & Acessórios —</td></tr>
-        <tr><td>Brinco Artesanal</td><td>Resina + flores secas</td><td>Unitário (par)</td><td class="price-cell">R$ 35,00</td></tr>
-        <tr><td>Colar Personalizado</td><td>Corrente + pingente</td><td>Unitário</td><td class="price-cell">R$ 55,00</td></tr>
-        <tr><td>Pulseira Trançada</td><td>Macramê colorido</td><td>Unitário</td><td class="price-cell">R$ 28,00</td></tr>
-        <tr><td>Anel em Argila</td><td>Polymer clay</td><td>Unitário</td><td class="price-cell">R$ 22,00</td></tr>
-        <tr><td colspan="4" class="preco-category">— Presentes & Kits —</td></tr>
-        <tr><td>Kit Amor</td><td>Brinco + Pulseira + Caixinha</td><td>Kit completo</td><td class="price-cell">R$ 85,00</td></tr>
-        <tr><td>Caixinha Surpresa</td><td>3 peças à escolha</td><td>Kit</td><td class="price-cell">R$ 70,00</td></tr>
-        <tr><td>Kit Maternidade</td><td>Peças especiais para mamãe</td><td>Kit</td><td class="price-cell">R$ 110,00</td></tr>
-        <tr><td colspan="4" class="preco-category">— Decoração & Papelaria —</td></tr>
-        <tr><td>Tag Personalizada</td><td>Para presentes e eventos</td><td>10 unidades</td><td class="price-cell">R$ 25,00</td></tr>
-        <tr><td>Enfeite de Parede</td><td>Macramê decorativo</td><td>30cm</td><td class="price-cell">R$ 90,00</td></tr>
-        <tr><td>Porta-Retrato</td><td>Argila + personalização</td><td>10x15cm</td><td class="price-cell">R$ 45,00</td></tr>
-        <tr><td colspan="4" class="preco-category">— Serviços Especiais —</td></tr>
-        <tr><td>Encomenda Especial</td><td>Peça personalizada sob medida</td><td>Consultar</td><td class="price-cell">A partir de R$ 60,00</td></tr>
-        <tr><td>Lembrancinha Evento</td><td>Casamento, aniversário, etc.</td><td>Mín. 20 unid.</td><td class="price-cell">A partir de R$ 8,00/un</td></tr>
+        <tr><td colspan="4" class="preco-category">— Bolsas —</td></tr>
+        <tr><td>Bolsa Tote</td><td>Canvas ou lona, alça longa</td><td class="price-cell">R$ 120,00</td><td class="pix-cell">R$ 108,00</td></tr>
+        <tr><td>Shoulder Bag</td><td>Couro sintético, alça ajustável</td><td class="price-cell">R$ 150,00</td><td class="pix-cell">R$ 135,00</td></tr>
+        <tr><td>Bolsa de Praia</td><td>Juta natural + forro interno</td><td class="price-cell">R$ 95,00</td><td class="pix-cell">R$ 85,50</td></tr>
+        <tr><td>Clutch de Festa</td><td>Tecido bordado, forro de cetim</td><td class="price-cell">R$ 110,00</td><td class="pix-cell">R$ 99,00</td></tr>
+        <tr><td>Mochila Mini</td><td>Lona premium, bolso frontal</td><td class="price-cell">R$ 180,00</td><td class="pix-cell">R$ 162,00</td></tr>
+        <tr><td colspan="4" class="preco-category">— Bolsa de Marmita —</td></tr>
+        <tr><td>Bolsa Marmita P</td><td>Térmica, cabe 1 marmita</td><td class="price-cell">R$ 75,00</td><td class="pix-cell">R$ 67,50</td></tr>
+        <tr><td>Bolsa Marmita M</td><td>Térmica, cabe 2 marmitas</td><td class="price-cell">R$ 95,00</td><td class="pix-cell">R$ 85,50</td></tr>
+        <tr><td>Bolsa Marmita G</td><td>Térmica, família / delivery</td><td class="price-cell">R$ 130,00</td><td class="pix-cell">R$ 117,00</td></tr>
+        <tr><td colspan="4" class="preco-category">— Nécessaires & Acessórios —</td></tr>
+        <tr><td>Nécessaire P</td><td>Zíper duplo, interior forrado</td><td class="price-cell">R$ 55,00</td><td class="pix-cell">R$ 49,50</td></tr>
+        <tr><td>Nécessaire G</td><td>Tamanho viagem, bolso externo</td><td class="price-cell">R$ 80,00</td><td class="pix-cell">R$ 72,00</td></tr>
+        <tr><td>Porta-Treco</td><td>Chaveiro bolsinha, várias cores</td><td class="price-cell">R$ 35,00</td><td class="pix-cell">R$ 31,50</td></tr>
+        <tr><td colspan="4" class="preco-category">— Serviços & Encomendas —</td></tr>
+        <tr><td>Encomenda Personalizada</td><td>Tecido, cor e tamanho à escolha</td><td class="price-cell">A partir de R$ 80,00</td><td class="pix-cell">Consultar</td></tr>
+        <tr><td>Lembrancinha Evento</td><td>Casamento, chá de bebê, etc.</td><td class="price-cell">A partir de R$ 18,00/un</td><td class="pix-cell">Mín. 20 un.</td></tr>
+        <tr><td>Reparo / Ajuste</td><td>Zíper, alça, forro, acabamento</td><td class="price-cell">A partir de R$ 25,00</td><td class="pix-cell">Consultar</td></tr>
       </tbody>
     </table>
     <p style="font-size:0.75rem;color:var(--light);margin-top:1.5rem;text-align:center;font-weight:300">
@@ -905,7 +953,6 @@
       <div class="contact-label">Localização</div>
       <div class="contact-value">Rio de Janeiro, RJ</div>
     </div>
-    </div>
   </div>
 </section>
 
@@ -922,8 +969,8 @@
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">Ateliê <span>Ale&Enzo</span></div>
-  <div>© 2025 Ateliê Ale&Enzo. Todos os direitos reservados.</div>
+  <div class="footer-logo">Ateliê <span>Alê&Enzo</span></div>
+  <div>© 2025 Ateliê Alê&Enzo. Todos os direitos reservados.</div>
   <div style="display:flex;gap:1.5rem">
     <a href="#">Política de Privacidade</a>
     <a href="#">Trocas & Devoluções</a>
@@ -934,16 +981,11 @@
 <div id="toast"></div>
 
 <script>
-// CURSOR
+// ─── CURSOR ───────────────────────────────────────────────────────────────────
 const cursor = document.getElementById('cursor');
 const ring = document.getElementById('cursor-ring');
 let mx = 0, my = 0, rx = 0, ry = 0;
 document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-const hoverEls = 'a, button, .product-card, .social-link, .filter-tab, .pay-tab';
-document.querySelectorAll(hoverEls).forEach(el => {
-  el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
-  el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
-});
 function animCursor() {
   cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
   rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
@@ -951,108 +993,210 @@ function animCursor() {
   requestAnimationFrame(animCursor);
 }
 animCursor();
+function bindCursorHover() {
+  document.querySelectorAll('a, button, .product-card, .social-link, .filter-tab, .pay-tab, .size-btn').forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+  });
+}
+bindCursorHover();
 
-// NAV SCROLL
+// ─── NAV SCROLL ───────────────────────────────────────────────────────────────
 const nav = document.getElementById('mainNav');
 window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 50));
 
-// REVEAL
+// ─── REVEAL ───────────────────────────────────────────────────────────────────
 const observer = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
 }, { threshold: 0.1 });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-// PRODUCTS DATA
-const products = [
-  { 
-  id: 1, 
-  name: 'Frasqueira Meg', 
-  desc: 'Frasqueira artesanal disponível em 3 tamanhos', 
-  emoji: '👜', 
-  badge: 'Novo', 
-  cat: 'Bolsas',
-  sizes: [
-    { label: 'P', price: 120,00 },
-    { label: 'M', price: 140,00 },
-    { label: 'G', price: 160,00 },
-  ],
-  pixDiscount: 0.10, // 10% desconto para pagamento via PIX
+// ─── PRODUCTS DATA ────────────────────────────────────────────────────────────
+const PIX_DISCOUNT = 0.10;
 
-const selectedSize = product.sizes?.[0]; 
-const price = selectedSize ? selectedSize.price : product.price;
-const pixPrice = (price * (1 - product.pixDiscount)).toFixed(2);
-<div class="sizes">
-  {product.sizes.map(s => (
-    <button 
-      class={`size-btn ${selected === s.label ? 'active' : ''}`}
-      onClick={() => setSelected(s.label)}
-    >
-      {s.label} — R$ {s.price}
-    </button>
-  ))}
-  <p class="price">R$ {price},00</p>
-<p class="pix-price">💳 Pix: R$ {pixPrice} <span>(−10%)</span></p>
-</div>
-},
-{ id:2, name:'Colar Lua', desc:'Corrente dourada + pingente', price:55, oldPrice:null, emoji:'🌙', badge:null, cat:'bijoux' },
-  { id:3, name:'Kit Amor', desc:'3 peças + caixinha especial', price:85, oldPrice:100, emoji:'💝', badge:'Mais Vendido', cat:'presentes' },
-  { id:4, name:'Pulseira Macramê', desc:'Trançada à mão, colorida', price:28, oldPrice:null, emoji:'🧵', badge:null, cat:'bijoux' },
-  { id:5, name:'Enfeite de Parede', desc:'Macramê decorativo 30cm', price:90, oldPrice:null, emoji:'🪢', badge:null, cat:'decoracao' },
-  { id:6, name:'Caixinha Surpresa', desc:'3 peças selecionadas', price:70, oldPrice:80, emoji:'🎁', badge:'Oferta', cat:'presentes' },
-  { id:7, name:'Anel Argila', desc:'Polymer clay artesanal', price:22, oldPrice:null, emoji:'💍', badge:null, cat:'bijoux' },
-  { id:8, name:'Tag Personalizada', desc:'Para presentes (10 un)', price:25, oldPrice:null, emoji:'🏷️', badge:null, cat:'decoracao' },
+const products = [
+  {
+    id: 1, name: 'Bolsa Tote Canvas', emoji: '👜', badge: 'Novo', cat: 'bolsas',
+    desc: 'Algodão cru reforçado, ideal para o dia a dia',
+    sizes: [
+      { label: 'P', price: 100 },
+      { label: 'M', price: 120 },
+      { label: 'G', price: 140 },
+    ]
+  },
+  {
+    id: 2, name: 'Shoulder Bag', emoji: '👝', badge: null, cat: 'bolsas',
+    desc: 'Couro sintético premium, alça ajustável',
+    sizes: [
+      { label: 'Mini', price: 130 },
+      { label: 'Média', price: 150 },
+    ]
+  },
+  {
+    id: 3, name: 'Bolsa Marmita Térmica', emoji: '🍱', badge: 'Mais Vendida', cat: 'marmita',
+    desc: 'Isolamento térmico, impermeável, com alça e fecho',
+    sizes: [
+      { label: 'P', price: 75 },
+      { label: 'M', price: 95 },
+      { label: 'G', price: 130 },
+    ]
+  },
+  {
+    id: 4, name: 'Nécessaire', emoji: '💼', badge: null, cat: 'acessorios',
+    desc: 'Zíper duplo, interior forrado, várias estampas',
+    sizes: [
+      { label: 'P', price: 55 },
+      { label: 'G', price: 80 },
+    ]
+  },
+  {
+    id: 5, name: 'Clutch de Festa', emoji: '✨', badge: null, cat: 'bolsas',
+    desc: 'Tecido bordado à mão, forro de cetim',
+    price: 110
+  },
+  {
+    id: 6, name: 'Mochila Mini', emoji: '🎒', badge: 'Oferta', cat: 'bolsas',
+    desc: 'Lona premium resistente, bolso frontal com zíper',
+    price: 180
+  },
+  {
+    id: 7, name: 'Bolsa de Praia', emoji: '🏖️', badge: null, cat: 'bolsas',
+    desc: 'Juta natural + forro interno impermeável',
+    price: 95
+  },
+  {
+    id: 8, name: 'Porta-Treco', emoji: '🔑', badge: null, cat: 'acessorios',
+    desc: 'Chaveiro bolsinha, diversas cores e estampas',
+    price: 35
+  },
 ];
 
-let cartItems = [];
-let activeFilter = 'todos';
+// State: selected size per product
+const selectedSizes = {};
+products.forEach(p => {
+  if (p.sizes) selectedSizes[p.id] = p.sizes[0].label;
+});
 
+function getProductPrice(p) {
+  if (p.sizes) {
+    const sz = p.sizes.find(s => s.label === selectedSizes[p.id]) || p.sizes[0];
+    return sz.price;
+  }
+  return p.price;
+}
+
+function getPixPrice(price) {
+  return price * (1 - PIX_DISCOUNT);
+}
+
+function fmt(n) {
+  return n.toFixed(2).replace('.', ',');
+}
+
+// ─── RENDER PRODUCTS ─────────────────────────────────────────────────────────
 function renderProducts(filter) {
   const grid = document.getElementById('productGrid');
   const filtered = filter === 'todos' ? products : products.filter(p => p.cat === filter);
-  grid.innerHTML = filtered.map(p => `
-    <div class="product-card" data-id="${p.id}">
-      <div class="product-img">
-        <div class="product-emoji">${p.emoji}</div>
-        ${p.badge ? `<div class="product-badge">${p.badge}</div>` : ''}
-        <div class="product-overlay">
-          <button class="overlay-btn" onclick="addToCart(${p.id})">Adicionar ao Carrinho</button>
-        </div>
+
+  grid.innerHTML = filtered.map(p => {
+    const price = getProductPrice(p);
+    const pixPrice = getPixPrice(price);
+
+    const sizesHTML = p.sizes ? `
+      <div class="size-selector" id="sizes-${p.id}">
+        ${p.sizes.map(s => `
+          <button
+            class="size-btn ${selectedSizes[p.id] === s.label ? 'active' : ''}"
+            onclick="selectSize(${p.id}, '${s.label}', this)"
+          >${s.label} · R$${fmt(s.price)}</button>
+        `).join('')}
       </div>
-      <div class="product-info">
-        <div class="product-name">${p.name}</div>
-        <div class="product-desc">${p.desc}</div>
-        <div class="product-footer">
-          <div>
-            ${p.oldPrice ? `<span class="product-price-old">R$ ${p.oldPrice},00</span>` : ''}
-            <span class="product-price">R$ ${p.price},00</span>
+    ` : '';
+
+    return `
+      <div class="product-card" data-id="${p.id}">
+        <div class="product-img">
+          <div class="product-emoji">${p.emoji}</div>
+          ${p.badge ? `<div class="product-badge">${p.badge}</div>` : ''}
+          <div class="product-overlay">
+            <button class="overlay-btn" onclick="addToCart(${p.id})">Adicionar ao Carrinho</button>
           </div>
-          <button class="add-cart" onclick="addToCart(${p.id})" title="Adicionar">+</button>
+        </div>
+        <div class="product-info">
+          <div class="product-name">${p.name}</div>
+          <div class="product-desc">${p.desc}</div>
+          ${sizesHTML}
+          <div class="product-footer">
+            <div class="price-block">
+              <div class="price-credit">Cartão: <span>R$ ${fmt(price)}</span></div>
+              <div class="product-price" id="price-label-${p.id}">R$ ${fmt(price)}</div>
+              <div class="price-pix" id="pix-label-${p.id}">
+                💚 PIX R$ ${fmt(pixPrice)}
+                <span class="price-pix-badge">−10%</span>
+              </div>
+            </div>
+            <button class="add-cart" onclick="addToCart(${p.id})" title="Adicionar">+</button>
+          </div>
         </div>
       </div>
-    </div>
-  `).join('');
-  document.querySelectorAll('.product-card a, .product-card button').forEach(el => {
-    el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
-    el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
-  });
+    `;
+  }).join('');
+
+  bindCursorHover();
 }
+
+function selectSize(productId, sizeLabel, btn) {
+  selectedSizes[productId] = sizeLabel;
+
+  // Update active button
+  document.querySelectorAll(`#sizes-${productId} .size-btn`).forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  // Update price display
+  const p = products.find(x => x.id === productId);
+  const price = getProductPrice(p);
+  const pixPrice = getPixPrice(price);
+
+  const priceLabel = document.getElementById(`price-label-${productId}`);
+  const pixLabel = document.getElementById(`pix-label-${productId}`);
+  if (priceLabel) priceLabel.textContent = `R$ ${fmt(price)}`;
+  if (pixLabel) pixLabel.innerHTML = `💚 PIX R$ ${fmt(pixPrice)} <span class="price-pix-badge">−10%</span>`;
+
+  // Update credit label
+  const card = btn.closest('.product-card');
+  if (card) {
+    const creditEl = card.querySelector('.price-credit span');
+    if (creditEl) creditEl.textContent = `R$ ${fmt(price)}`;
+  }
+}
+
 renderProducts('todos');
 
 function filterProducts(cat, btn) {
-  activeFilter = cat;
   document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
   renderProducts(cat);
 }
 
-// CART
+// ─── CART ─────────────────────────────────────────────────────────────────────
+let cartItems = [];
+
 function addToCart(id) {
   const product = products.find(p => p.id === id);
-  const existing = cartItems.find(i => i.id === id);
-  if (existing) existing.qty++;
-  else cartItems.push({ ...product, qty: 1 });
+  const sizeLabel = product.sizes ? selectedSizes[id] : null;
+  const price = getProductPrice(product);
+
+  // Check if same product+size already in cart
+  const existing = cartItems.find(i => i.id === id && i.sizeLabel === sizeLabel);
+  if (existing) {
+    existing.qty++;
+  } else {
+    cartItems.push({ ...product, qty: 1, sizeLabel, price });
+  }
+
   updateCart();
-  showToast(`✓ ${product.name} adicionado!`);
+  const sizeStr = sizeLabel ? ` (${sizeLabel})` : '';
+  showToast(`✓ ${product.name}${sizeStr} adicionada!`);
 }
 
 function updateCart() {
@@ -1063,38 +1207,49 @@ function updateCart() {
 
   const itemsEl = document.getElementById('cartItems');
   const footerEl = document.getElementById('cartFooter');
+
   if (cartItems.length === 0) {
     itemsEl.innerHTML = '<div class="cart-empty"><div class="cart-empty-icon">🛍️</div><p>Seu carrinho está vazio</p></div>';
     footerEl.style.display = 'none';
     return;
   }
+
   footerEl.style.display = 'block';
-  itemsEl.innerHTML = cartItems.map(item => `
-    <div class="cart-item">
-      <div class="cart-item-img">${item.emoji}</div>
-      <div class="cart-item-info">
-        <div class="cart-item-name">${item.name}</div>
-        <div class="cart-item-price">R$ ${item.price},00</div>
-        <div class="cart-item-qty">
-          <button class="qty-btn" onclick="changeQty(${item.id},-1)">−</button>
-          <span class="qty-num">${item.qty}</span>
-          <button class="qty-btn" onclick="changeQty(${item.id},1)">+</button>
-          <button class="remove-item" onclick="removeItem(${item.id})">Remover</button>
+  itemsEl.innerHTML = cartItems.map((item, idx) => {
+    const pixP = getPixPrice(item.price);
+    return `
+      <div class="cart-item">
+        <div class="cart-item-img">${item.emoji}</div>
+        <div class="cart-item-info">
+          <div class="cart-item-name">${item.name}</div>
+          ${item.sizeLabel ? `<div class="cart-item-size">Tamanho: ${item.sizeLabel}</div>` : ''}
+          <div class="cart-item-price">Cartão: R$ ${fmt(item.price)}</div>
+          <div class="cart-item-pix">💚 PIX: R$ ${fmt(pixP)}</div>
+          <div class="cart-item-qty">
+            <button class="qty-btn" onclick="changeQty(${idx},-1)">−</button>
+            <span class="qty-num">${item.qty}</span>
+            <button class="qty-btn" onclick="changeQty(${idx},1)">+</button>
+            <button class="remove-item" onclick="removeItem(${idx})">Remover</button>
+          </div>
         </div>
       </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
+
   const total = cartItems.reduce((a, i) => a + i.price * i.qty, 0);
-  document.getElementById('cartTotal').textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+  const pixTotal = getPixPrice(total);
+  document.getElementById('cartTotal').textContent = `R$ ${fmt(total)}`;
+  document.getElementById('cartPixTotal').textContent = `R$ ${fmt(pixTotal)}`;
+
+  bindCursorHover();
 }
 
-function changeQty(id, delta) {
-  const item = cartItems.find(i => i.id === id);
-  item.qty += delta;
-  if (item.qty <= 0) cartItems = cartItems.filter(i => i.id !== id);
+function changeQty(idx, delta) {
+  cartItems[idx].qty += delta;
+  if (cartItems[idx].qty <= 0) cartItems.splice(idx, 1);
   updateCart();
 }
-function removeItem(id) { cartItems = cartItems.filter(i => i.id !== id); updateCart(); }
+function removeItem(idx) { cartItems.splice(idx, 1); updateCart(); }
 
 function toggleCart() {
   document.getElementById('cartSidebar').classList.toggle('open');
@@ -1115,7 +1270,7 @@ function checkout() {
   showToast('Redirecionando para o pagamento... 🔒');
 }
 
-// FRETE
+// ─── FRETE ────────────────────────────────────────────────────────────────────
 function formatCep(el) {
   let v = el.value.replace(/\D/g,'');
   if (v.length > 5) v = v.slice(0,5) + '-' + v.slice(5,8);
@@ -1126,21 +1281,18 @@ function calcFrete() {
   const cep = document.getElementById('cepInput').value.replace(/\D/g,'');
   if (cep.length < 8) { showToast('Digite um CEP válido'); return; }
   const result = document.getElementById('frete-result');
-  const isLocal = cep.startsWith('20') || cep.startsWith('21') || cep.startsWith('22') || cep.startsWith('23');
-  const pac = isLocal ? 'R$ 12,50' : 'R$ 18,90';
-  const sedex = isLocal ? 'R$ 22,00' : 'R$ 35,00';
-  const moto = isLocal ? 'R$ 15,00' : 'Indisponível';
-  document.getElementById('frete-pac').textContent = pac + ' (5–10 dias úteis)';
-  document.getElementById('frete-sedex').textContent = sedex + ' (1–3 dias úteis)';
-  document.getElementById('frete-moto').textContent = moto + (isLocal ? ' (mesmo dia)' : '');
+  const isLocal = ['20','21','22','23'].some(p => cep.startsWith(p));
+  document.getElementById('frete-pac').textContent    = (isLocal ? 'R$ 12,50' : 'R$ 18,90') + ' (5–10 dias úteis)';
+  document.getElementById('frete-sedex').textContent  = (isLocal ? 'R$ 22,00' : 'R$ 35,00') + ' (1–3 dias úteis)';
+  document.getElementById('frete-moto').textContent   = isLocal ? 'R$ 15,00 (mesmo dia)' : 'Indisponível';
   result.style.display = 'block';
   showToast('Frete calculado com sucesso! 📦');
 }
 
-// NEWSLETTER
+// ─── NEWSLETTER ───────────────────────────────────────────────────────────────
 function subscribeNewsletter() { showToast('Inscrição realizada! Bem-vinda(o) 💛'); }
 
-// TOAST
+// ─── TOAST ────────────────────────────────────────────────────────────────────
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
