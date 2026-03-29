@@ -802,9 +802,9 @@
     </div>
     <div class="filter-tabs">
       <button class="filter-tab active" onclick="filterProducts('todos',this)">Todos</button>
-      <button class="filter-tab" onclick="filterProducts('bijoux',this)">Bijoux</button>
+      <button class="filter-tab" onclick="filterProducts('Bolsas',this)">Bolsas</button>
       <button class="filter-tab" onclick="filterProducts('presentes',this)">Presentes</button>
-      <button class="filter-tab" onclick="filterProducts('decoracao',this)">Decoração</button>
+      <button class="filter-tab" onclick="filterProducts('Acessórios',this)">Acessórios</button>
     </div>
   </div>
   <div class="product-grid" id="productGrid"></div>
@@ -868,7 +868,7 @@
     <div id="frete-result">
       <div class="frete-option"><span class="frete-name">📦 PAC (Correios)</span><span class="frete-price" id="frete-pac">—</span></div>
       <div class="frete-option"><span class="frete-name">⚡ SEDEX</span><span class="frete-price" id="frete-sedex">—</span></div>
-      <div class="frete-option"><span class="frete-name">🛵 Motoboy Local (RJ)</span><span class="frete-price" id="frete-moto">—</span></div>
+      <div class="frete-option"><span class="frete-name">🛵 MotoUber (RJ)</span><span class="frete-price" id="frete-moto">—</span></div>
     </div>
   </div>
 </section>
@@ -899,7 +899,7 @@
     </div>
     <div class="contact-item">
       <div class="contact-label">WhatsApp</div>
-      <div class="contact-value">(21) 9 7999-0967</div>
+      <div class="contact-value">(21) 97999-0967</div>
     </div>
     <div class="contact-item">
       <div class="contact-label">Localização</div>
@@ -964,8 +964,37 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
 // PRODUCTS DATA
 const products = [
-  { id:1, name:'Brinco Floral', desc:'Resina com flores secas', price:35, oldPrice:45, emoji:'🌸', badge:'Novo', cat:'bijoux' },
-  { id:2, name:'Colar Lua', desc:'Corrente dourada + pingente', price:55, oldPrice:null, emoji:'🌙', badge:null, cat:'bijoux' },
+  { 
+  id: 1, 
+  name: 'Frasqueira Meg', 
+  desc: 'Frasqueira artesanal disponível em 3 tamanhos', 
+  emoji: '👜', 
+  badge: 'Novo', 
+  cat: 'Bolsas',
+  sizes: [
+    { label: 'P', price: 120,00 },
+    { label: 'M', price: 140,00 },
+    { label: 'G', price: 160,00 },
+  ],
+  pixDiscount: 0.10, // 10% desconto para pagamento via PIX
+
+const selectedSize = product.sizes?.[0]; 
+const price = selectedSize ? selectedSize.price : product.price;
+const pixPrice = (price * (1 - product.pixDiscount)).toFixed(2);
+<div class="sizes">
+  {product.sizes.map(s => (
+    <button 
+      class={`size-btn ${selected === s.label ? 'active' : ''}`}
+      onClick={() => setSelected(s.label)}
+    >
+      {s.label} — R$ {s.price}
+    </button>
+  ))}
+  <p class="price">R$ {price},00</p>
+<p class="pix-price">💳 Pix: R$ {pixPrice} <span>(−10%)</span></p>
+</div>
+},
+{ id:2, name:'Colar Lua', desc:'Corrente dourada + pingente', price:55, oldPrice:null, emoji:'🌙', badge:null, cat:'bijoux' },
   { id:3, name:'Kit Amor', desc:'3 peças + caixinha especial', price:85, oldPrice:100, emoji:'💝', badge:'Mais Vendido', cat:'presentes' },
   { id:4, name:'Pulseira Macramê', desc:'Trançada à mão, colorida', price:28, oldPrice:null, emoji:'🧵', badge:null, cat:'bijoux' },
   { id:5, name:'Enfeite de Parede', desc:'Macramê decorativo 30cm', price:90, oldPrice:null, emoji:'🪢', badge:null, cat:'decoracao' },
